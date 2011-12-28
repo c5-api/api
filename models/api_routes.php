@@ -7,10 +7,10 @@ class ApiRequest {
 	public function parseRequest() { //have routes added on_start and run this on_before_render?
 		$req = Request::get();
 		$path = $req->getRequestPath();
-		$path = trim($path, '/')
+		$path = trim($path, '/');
 		$pathparts = explode($path, '/');
 		
-		$basepath = trim(BASE_API_PATH, '/')
+		$basepath = trim(BASE_API_PATH, '/');
 		$match = explode($basepath, '/');
 		$mparts = count($match);
 
