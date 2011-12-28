@@ -37,11 +37,11 @@ class ApiRequest {
 		$r = new ApiRouter($path);
 		$r->match('/users/:id', 'users#show', array('filters' => array('id' => '(\d+)')));//got to load these from somewhere
 		if ($r->hasRoute()) {
-    		extract($r->getRoute());
-    		//herp
-    	} else {
-    		throw new Exception('Invalid Route!');
-    	}
+			extract($r->getRoute());
+			//herp
+		} else {
+			throw new Exception('Invalid Route!');
+		}
 	}
 	
 	public function handleException(Exception $e) {
