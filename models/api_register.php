@@ -1,12 +1,16 @@
 <?php  defined('C5_EXECUTE') or die('Access Denied');
 
-class ApiRegister extends ApiPackage{
+class ApiRegister extends Object {
 
 	public function add($api) {
 
 		if(!self::apiRouteExists($api)) {
 			$db = Loader::db();
+<<<<<<< HEAD
 			$db->Execute('insert into ApiRouteRegistry (ID) values (?)', array($api));
+=======
+			$db->Execute('insert into ApiRouteRegistry (api) values (?)', array($api));
+>>>>>>> origin/master
 			$ID = $db->Insert_ID();
 			return self::getByID($ID);
 		}
@@ -25,7 +29,11 @@ class ApiRegister extends ApiPackage{
 
 	private function apiRouteExists($api) {
 		$db = Loader::db();
+<<<<<<< HEAD
 		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where pkgHandle = ?", array($api));
+=======
+		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where event = ?", array($api));
+>>>>>>> origin/master
 		return $r > 0;
 	}
 
