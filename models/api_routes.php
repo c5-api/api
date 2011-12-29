@@ -57,12 +57,58 @@ class ApiRequest {
 			extract($r->getRoute());
 			//herp
 		} else {
-			throw new Exception('Invalid Route!');
+			throw new Exception(t('Invalid Route!'), 501);
 		}
 	}
 	
 	public function handleException(Exception $e) {
-		echo $e->getMessage();
+		//print_r($e);
+		$resp = new ApiResponse();
+		$resp->setData(array());
+		$resp->setMessage($e->getMessage());
+		$resp->setError(true);
+		$resp->setCode($e->getCode());
+		$resp->send();
+	}
+	
+}
+
+class ApiResponse {
+
+	private $data = array();
+	private $message = 'OK';
+	private $error = false;
+	private $code = 200;//OK
+
+	public function setData($data = null) {
+		$this->data = $data;
+	}
+	
+	public function setMessage($data = 'OK') {
+		$this->message = $data;
+	}
+	
+	public function setCode($data = 200) {
+		$this->code = $data;
+	}
+	
+	public function setError($data = false) {
+		if($data) {
+			$data = true;
+		} else {
+			$data = false;
+		}
+		$this->error = $data;
+	}
+
+	public function send() {
+		$json = Loader::helper('json');
+		$response = array();
+		$response['response']['code'] = $this->code;
+		$response['response']['error'] = $this->error;
+		$response['response']['message'] = $this->message;
+		$response['response']['data'] = $this->data;
+		echo $json->encode($response);
 		exit;
 	}
 
