@@ -52,11 +52,14 @@ class ApiRequest {
 	public function dispatch($path = null) {
 		$r = new ApiRouter($path);//what do I pass here?
 
-		$r->match('/users/:id', 'UserInfo#getByID', array('filters' => array('id' => '(\d+)')));//got to load these from somewhere...db?
+		$r->match('/users/', 'api', 'User#listUsers');//got to load these from somewhere...db?
+		
 		if ($r->hasRoute()) {
 			extract($r->getRoute());
+			$txt = Loader::helper('text');
+			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
 			$resp = new ApiResponse();
-			$ret = call_user_func_array(array($controller, $action), $params);
+			$ret = call_user_func_array(array('Api'.$controller, $action), $params);
 			$resp->setData($ret);
 			$resp->send();
 			//herp
