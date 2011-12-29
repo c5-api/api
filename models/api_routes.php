@@ -53,6 +53,7 @@ class ApiRequest {
 		$r = new ApiRouter($path);//what do I pass here?
 
 		$r->match('/users/', 'api', 'User#listUsers');//got to load these from somewhere...db?
+		$r->match('/users/add', 'api', 'User#addUser', array('via' => 'POST'));
 		
 		if ($r->hasRoute()) {
 			extract($r->getRoute());
