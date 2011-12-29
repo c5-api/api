@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <schema version="0.3">
-  <table name="apiRouteRegistry">
-    <field name="id" type="I" size="10">
+  <table name="ApiRouteRegistry">
+    <field name="ID" type="I" size="10">
       <KEY/>
       <AUTOINCREMENT/>
       <UNSIGNED/>
     </field>
-    <field name="pkgId" type="I" size="10">
+    <field name="pkgID" type="I" size="10">
       <NOTNULL/>
     </field>
     <field name="pkgHandle" type="C" size="255">
