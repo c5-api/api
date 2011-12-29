@@ -107,6 +107,7 @@ class ApiResponse {
 
 	public function send() {
 		$json = Loader::helper('json');
+		header('Content-type: application/json');
 		$response = array();
 		$response['response']['code'] = $this->code;
 		$response['response']['error'] = $this->error;
