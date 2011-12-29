@@ -6,11 +6,7 @@ class ApiRegister extends Object {
 
 		if(!self::apiRouteExists($api)) {
 			$db = Loader::db();
-<<<<<<< HEAD
-			$db->Execute('insert into ApiRouteRegistry (ID) values (?)', array($api));
-=======
 			$db->Execute('insert into ApiRouteRegistry (api) values (?)', array($api));
->>>>>>> origin/master
 			$ID = $db->Insert_ID();
 			return self::getByID($ID);
 		}
@@ -29,11 +25,7 @@ class ApiRegister extends Object {
 
 	private function apiRouteExists($api) {
 		$db = Loader::db();
-<<<<<<< HEAD
-		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where pkgHandle = ?", array($api));
-=======
-		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where event = ?", array($api));
->>>>>>> origin/master
+		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where route = ?", array($api));
 		return $r > 0;
 	}
 
