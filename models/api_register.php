@@ -2,28 +2,19 @@
 
 class ApiRegister extends ApiPackage{
 
-	public function add($event) {
-		if(!self::eventExists($event)) {
+	public function add($api) {
+		if(!self::apiRouteExists($api)) {
 			$db = Loader::db();
-			$db->Execute('insert into ApiRouteTesterApiRoutes (event) values (?)', array(self::CleanApiRoute($event)));
+			$db->Execute('insert into ApiRouteRegistry (api) values (?)', array(self::CleanApiRoute($api)));
 			$ID = $db->Insert_ID();
 			return self::getByID($ID);
 		}
-		throw new Exception(t('An event with that name already exists!'));
-	}
-
-	public function getByApiRoute($event) {
-		$db = Loader::db();
-		$row = $db->GetRow("select * from ApiRouteTesterApiRoutes where handle = ?", array(self::CleanApiRoute($event)));
-		if ($row) {
-			$ID = $row['ID'];
-			return self::getByID($ID);
-		}
+		throw new Exception(t('An API route with that name already exists!'));
 	}
 
 	public function getByID($ID) {
 		$db = Loader::db();
-		$row = $db->GetRow("select * from ApiRouteTesterApiRoutes where ID = ?", array($ID));
+		$row = $db->GetRow("select * from ApiRouteRegistry where ID = ?", array($ID));
 		if ($row) {
 			$et = new self();
 			$et->setPropertiesFromArray($row);
@@ -31,23 +22,28 @@ class ApiRegister extends ApiPackage{
 		}
 	}
 
-	private function ApiRouteExists($event) {
+	private function apiRouteExists($api) {
 		$db = Loader::db();
-		$r = $db->GetOne("select count(ID) from ApiRouteTesterApiRoutes where event = ?", array(self::CleanApiRoute($event)));
+		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where event = ?", array(self::CleanApiRoute($api)));
 		return $r > 0;
 	}
 
+	private function CleanApiRoute($api) {
+		$clean = preg_replace("/[^0-9A-Za-z-_]/", "", trim($api));
+		return $api;
+	}
+
 	public function getID() {return $this->ID;}
-	public function getApiRoute() {return $this->event;}
+	public function getApiRoute() {return $this->api;}
 
 	public function getApiRouteList() {
 		$db = Loader::db();
-		$events = array();
-		$r = $db->Execute('select ID from ApiRouteTesterApiRoutes order by ID asc');
+		$apis = array();
+		$r = $db->Execute('select ID from ApiRouteRegistry order by ID asc');
 		while ($row = $r->FetchRow()) {
-			$events[] = self::getByID($row['ID']);
+			$apis[] = self::getByID($row['ID']);
 		}
-		return $events;
+		return $apis;
 	}
 
 
