@@ -3,9 +3,10 @@
 class ApiRegister extends ApiPackage{
 
 	public function add($api) {
+
 		if(!self::apiRouteExists($api)) {
 			$db = Loader::db();
-			$db->Execute('insert into ApiRouteRegistry (api) values (?)', array(self::CleanApiRoute($api)));
+			$db->Execute('insert into ApiRouteRegistry (ID) values (?)', array($api));
 			$ID = $db->Insert_ID();
 			return self::getByID($ID);
 		}
@@ -24,13 +25,8 @@ class ApiRegister extends ApiPackage{
 
 	private function apiRouteExists($api) {
 		$db = Loader::db();
-		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where event = ?", array(self::CleanApiRoute($api)));
+		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where pkgHandle = ?", array($api));
 		return $r > 0;
-	}
-
-	private function CleanApiRoute($api) {
-		$clean = preg_replace("/[^0-9A-Za-z-_]/", "", trim($api));
-		return $api;
 	}
 
 	public function getID() {return $this->ID;}
