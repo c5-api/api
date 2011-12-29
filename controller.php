@@ -16,9 +16,11 @@ class ApiPackage extends Package {
 	
 	public function on_start() {
 		if(!defined('BASE_API_PATH')) {
-			define('BASE_API_PATH', 'tools/api');
+			define('BASE_API_PATH', 'api');
 		}
 		Loader::model('api_routes', 'api');
+		//possibly on_start if we are using a db
+		Events::extend('on_before_render', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api_routes.php');
 	}
 	
 	public function install() {

@@ -8,18 +8,31 @@ class ApiRequest {
 		$req = Request::get();
 		$path = $req->getRequestPath();
 		$path = trim($path, '/');
-		$pathparts = explode($path, '/');
+		$pathparts = explode('/', $path);
+		$pparts = count($pathparts);
 		
 		$basepath = trim(BASE_API_PATH, '/');
-		$match = explode($basepath, '/');
+		$match = explode('/', $basepath);
 		$mparts = count($match);
 
 		$i = 0;
-		$combine = array_combine($match, $pathparts);
+		$p = $mparts;
+		
+		if($mparts != $pparts) {
+			$pathparts2 = array();
+			while($p > 0) {
+				$pathparts2[] = array_shift($pathparts);
+				$p--;
+			}
+		} else {
+			$pathparts2 = $pathparts;
+		}
+		$combine = array_combine($match, $pathparts2);
 		foreach($combine as $m => $p) {
-			if($i > $mparts) {
-				//we made it!
-				$base = str_replace($path, $basepath, '');
+			$i++;
+			if($m != $p) {
+				return;
+			} else if($m == $p && $i == $mparts) {
 				try {
 					$self = new self();
 					$self->dispatch('/'.BASE_API_PATH);//we pass it to the actuall proccessing - not sure what I should be passing here
@@ -27,15 +40,13 @@ class ApiRequest {
 					$self->handleException($e);
 				}
 			}
-			if($m != $p) {
-				return;//didn't match so lets end it.
-			}
 		}
 	}
 	
 	public function dispatch($path = null) {
-		$r = new ApiRouter($path);
-		$r->match('/users/:id', 'users#show', array('filters' => array('id' => '(\d+)')));//got to load these from somewhere
+		$r = new ApiRouter($path);//what do I pass here?
+
+		$r->match('/users/:id', 'users#show', array('filters' => array('id' => '(\d+)')));//got to load these from somewhere...db?
 		if ($r->hasRoute()) {
 			extract($r->getRoute());
 			//herp
@@ -45,7 +56,8 @@ class ApiRequest {
 	}
 	
 	public function handleException(Exception $e) {
-	
+		echo $e->getMessage();
+		exit;
 	}
 
 }
