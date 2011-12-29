@@ -93,6 +93,9 @@ class ApiResponse {
 	}
 	
 	public function setCode($data = 200) {
+		if(!is_array($data) && !is_object($data)) {
+			$data = array($data);
+		}
 		$this->code = $data;
 	}
 	
