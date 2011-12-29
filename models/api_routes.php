@@ -35,7 +35,13 @@ class ApiRequest {
 			} else if($m == $p && $i == $mparts) {
 				try {
 					$self = new self();
-					$self->dispatch('/'.BASE_API_PATH);//we pass it to the actuall proccessing - not sure what I should be passing here
+					$dirrel = strlen(DIR_REL.'/'.DISPATCHER_FILENAME);
+					if(substr($_SERVER['REQUEST_URI'], 0, $dirrel) == DIR_REL.'/'.DISPATCHER_FILENAME) { //pretty url hack
+						$path = DIR_REL.'/'.DISPATCHER_FILENAME.'/'.BASE_API_PATH;
+					} else {
+						$path = DIR_REL.'/'.BASE_API_PATH;
+					}
+					$self->dispatch($path);//we pass it to the actuall proccessing - not sure what I should be passing here
 				} catch (Exception $e) {
 					$self->handleException($e);
 				}
