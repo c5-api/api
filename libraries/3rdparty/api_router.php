@@ -4,6 +4,7 @@
  * Routing class to match request URL's against given routes and map them to a controller action.
  *
  * @author Danny
+ * @license MIT
  */
 final class ApiRouter {
 
@@ -68,11 +69,12 @@ final class ApiRouter {
      * Match a route to the current REQUEST_URI. Returns true on succes (route matches), false on failure.
      * 
      * @param string $route_url The URL of the route to match, must start with a leading slash. Dynamic URL value's must start with a colon. 
+     * @param string $pkg The handle of the package (used for locating models)
      * @param string $target The controller and action to map this route_url to, seperated by a hash (#). The action value defaults to 'index'. (optional)
      * @param array $args Accepts two keys, 'via' and 'as'. 'via' accepts a comma seperated list of HTTP Methods for this route. 'as' accepts a string and will be used as the name of this route.
      * @return boolean True if route matches URL, false if not.
      */
-    public function match($route_url, $target = '', array $args = array()) {
+    public function match($route_url, $pkg = 'api', $target = '', array $args = array()) {
 
         // check if this is a named route, if so, store it.
         if (isset($args['as'])) {
@@ -171,7 +173,7 @@ final class ApiRouter {
         unset($params['action']);
 
         $this->route_found = true;
-        $this->route = array('controller' => $controller, 'action' => $action, 'params' => $params);
+        $this->route = array('pkgHandle' => $pkg, 'controller' => $controller, 'action' => $action, 'params' => $params);
         return true;
     }
 
