@@ -52,9 +52,13 @@ class ApiRequest {
 	public function dispatch($path = null) {
 		$r = new ApiRouter($path);//what do I pass here?
 
-		$r->match('/users/:id', 'users#show', array('filters' => array('id' => '(\d+)')));//got to load these from somewhere...db?
+		$r->match('/users/:id', 'UserInfo#getByID', array('filters' => array('id' => '(\d+)')));//got to load these from somewhere...db?
 		if ($r->hasRoute()) {
 			extract($r->getRoute());
+			$resp = new ApiResponse();
+			$ret = call_user_func_array(array($controller, $action), $params);
+			$resp->setData($ret);
+			$resp->send();
 			//herp
 		} else {
 			throw new Exception(t('Invalid Route!'), 501);
