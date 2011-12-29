@@ -1,79 +1,31 @@
 <?xml version="1.0"?>
 <schema version="0.3">
-  <table name="ApiConsumer">
-    <field name="ID" type="I" size="10">
+  <table name="apiRouteRegistry">
+    <field name="id" type="I" size="10">
       <KEY/>
       <AUTOINCREMENT/>
       <UNSIGNED/>
     </field>
-    <field name="uID" type="I" size="10">
+    <field name="pkgId" type="I" size="10">
+      <NOTNULL/>
+    </field>
+    <field name="pkgHandle" type="C" size="255">
+      <NOTNULL/>
+    </field>    
+    <field name="routeName" type="C" size="255">
+      <NOTNULL/>
+    </field>
+    <field name="enabled" type="I1" size="1">
+      <NOTNULL/>
+      <DEFAULT value="1"/>      
+    </field>
+    <field name="rateLimit" type="I" size="10">
       <NOTNULL/>
       <DEFAULT value="0"/>
-      <UNSIGNED/>
     </field>
-    <field name="public_key" type="C" size="255">
-      <NOTNULL/>
-    </field>
-    <field name="secret_key" type="C" size="255">
-      <NOTNULL/>
-    </field>
-    <field name="active" type="I1" size="1">
-      <NOTNULL/>
-    </field>
-  </table>
-  <table name="ApiConsumerNonce">
-    <field name="ID" type="I" size="10">
-      <KEY/>
-      <AUTOINCREMENT/>
-      <UNSIGNED/>
-    </field>
-    <field name="uID" type="I" size="10">
+    <field name="rateCount" type="I" size="10">
       <NOTNULL/>
       <DEFAULT value="0"/>
-      <UNSIGNED/>
-    </field>
-    <field name="created" type="T">
-      <DEFTIMESTAMP/>
-    </field>
-    <field name="nonce" type="C" size="255">
-      <NOTNULL/>
-    </field>
-  </table>
-  <table name="ApiTokens">
-    <field name="ID" type="I" size="10">
-      <KEY/>
-      <AUTOINCREMENT/>
-      <UNSIGNED/>
-    </field>
-    <field name="type" type="I" size="10">
-    	<NOTNULL/>
-    </field>
-    <field name="uID" type="I" size="10">
-      <NOTNULL/>
-      <DEFAULT value="0"/>
-      <UNSIGNED/>
-    </field>
-    <field name="token" type="C" size="255">
-      <NOTNULL/>
-    </field>
-    <field name="token_secret" type="C" size="255">
-      <NOTNULL/>
-    </field>
-    <field name="callback_url" type="X2">
-      <NOTNULL/>
-    </field>
-    <field name="verifier" type="C" size="255">
-      <NOTNULL/>
-    </field>
-  </table>
-  <table name="ApiTokenTypes">
-  	<field name="ID" type="I" size="10">
-  	  <KEY/>
-      <AUTOINCREMENT/>
-      <UNSIGNED/>
-  	</field>
-  	<field name="type" type="C" size="255">
-      <NOTNULL/>
-    </field>
+    </field>    
   </table>
 </schema>
