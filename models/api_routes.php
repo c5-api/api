@@ -1,6 +1,6 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 
-Loader::library('3rdparty/api_router', 'api');
+Loader::library('3rdparty/api_router', C5_API_HANDLE);
 
 class ApiRequest {
 
@@ -52,7 +52,7 @@ class ApiRequest {
 	public function dispatch($path = null) {
 		$r = new ApiRouter($path);//what do I pass here?
 
-		Loader::model('api_register', 'api');
+		Loader::model('api_register', C5_API_HANDLE);
 		$list = ApiRegister::getApiRouteList();
 		foreach($list as $api) {
 			//print_r($api);

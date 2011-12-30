@@ -18,6 +18,7 @@ class ApiPackage extends Package {
 		if(!defined('BASE_API_PATH')) {
 			define('BASE_API_PATH', 'api');
 		}
+		define('C5_API_HANDLE', 'api');
 		Loader::model('api_routes', 'api');
 		//possibly on_start if we are using a db
 		Events::extend('on_before_render', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api_routes.php');

@@ -74,7 +74,7 @@ final class ApiRouter {
      * @param array $args Accepts two keys, 'via' and 'as'. 'via' accepts a comma seperated list of HTTP Methods for this route. 'as' accepts a string and will be used as the name of this route.
      * @return boolean True if route matches URL, false if not.
      */
-    public function match($route_url, $pkg = 'api', $target = '', array $args = array()) {
+    public function match($route_url, $pkg = C5_API_HANDLE, $target = '', array $args = array()) {
 
         // check if this is a named route, if so, store it.
         if (isset($args['as'])) {

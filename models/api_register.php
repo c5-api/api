@@ -12,7 +12,7 @@ class ApiRegister extends Object {
 				$api['enabled'] = false;
 			}
 			if(!$api['pkgHandle']) {
-				$api['pkgHandle'] = 'api';//possibly change this to _error,
+				$api['pkgHandle'] = C5_API_HANDLE;//possibly change this to _error,
 			}
 			if(!$api['routeName']) {
 				$api['routeName'] = t('Unkown Route Name'); //we could make the name into a handle and do reverse routing...?
@@ -82,6 +82,9 @@ class ApiRegister extends Object {
 	}
 	
 	public static function getApiListByPackage($pkgHandle) {
+		if($pkgHandle == C5_API_HANDLE) { //safety
+			return false;
+		}
 		$db = Loader::db();
 		$apis = array();
 		$r = $db->Execute('select ID from ApiRouteRegistry where pkgHandle = ? order by ID asc', array($pkgHandle));
