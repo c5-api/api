@@ -2,7 +2,7 @@
 
 class ApiRegister extends Object {
 
-	public function add(array $api) {
+	public static function add(array $api) {
 		
 		$api['route'] = trim($api['route'], '/ ');
 		if($api['route'] && !self::apiRouteExists($api['route'])) {
