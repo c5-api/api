@@ -8,10 +8,17 @@
     </field>
     <field name="pkgHandle" type="C" size="255">
       <NOTNULL/>
-    </field>    
+    </field>
+    <field name="route" type="X2">
+      <NOTNULL/>
+    </field>
     <field name="routeName" type="C" size="255">
       <NOTNULL/>
     </field>
+    <field name="aclass" type="C" size="255"/>
+    <field name="method" type="C" size="255"/>
+    <field name="via" type="X2"/>
+    <field name="afilter" type="X2"/>
     <field name="enabled" type="I1" size="1">
       <NOTNULL/>
       <DEFAULT value="1"/>      
@@ -19,14 +26,7 @@
     <field name="isResource" type="I1" size="1">
       <NOTNULL/>
       <DEFAULT value="0"/>      
-    </field>    
-    <field name="rateLimit" type="I" size="10">
-      <NOTNULL/>
-      <DEFAULT value="0"/>
-    </field>
-    <field name="rateCount" type="I" size="10">
-      <NOTNULL/>
-      <DEFAULT value="0"/>
-    </field>    
+    </field>  
+    <field name="only" type="X2"/>
   </table>
 </schema>

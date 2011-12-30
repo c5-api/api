@@ -52,8 +52,28 @@ class ApiRequest {
 	public function dispatch($path = null) {
 		$r = new ApiRouter($path);//what do I pass here?
 
-		$r->match('/users/', 'api', 'User#listUsers');//got to load these from somewhere...db?
-		$r->match('/users/add', 'api', 'User#addUser', array('via' => 'POST'));
+		Loader::model('api_register', 'api');
+		$list = ApiRegister::getApiRouteList();
+		foreach($list as $api) {
+			//print_r($api);
+			if(!$api->isEnabled()) {
+				continue;
+			}
+			$params = array();
+			if($api->getClass() && $api->getMethod()) {
+				$action = $api->getClass().'#'.$api->getMethod();//eg: User#listUsers
+			} else {
+				$action = '';
+			}
+			if($api->getFilters()) {
+				$params['filters'] = $api->getFilters();
+			}
+			if($api->getVia()) {
+				$params['via'] = implode(',', $api->getVia());
+			}
+			//var_dump('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
+			$r->match('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
+		}
 		
 		if ($r->hasRoute()) {
 			extract($r->getRoute());
