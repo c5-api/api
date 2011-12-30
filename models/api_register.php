@@ -28,7 +28,8 @@ class ApiRegister extends Object {
 			$ID = $db->Insert_ID();
 			return self::getByID($ID);
 		}
-		throw new Exception(t('An API with that route already exists!')); //possibly just return false
+		return false;
+		//throw new Exception(t('An API with that route already exists!')); //possibly just return false
 	}
 
 	public static function getByID($ID) {

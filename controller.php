@@ -25,7 +25,11 @@ class ApiPackage extends Package {
 	}
 	
 	public function install() {
-		$pkg = parent::install();
+		$vh = Loader::helper('validation/identifier');
+		$key = $vh->getString(24);
+		$pkg = $this;
+		$pkg->saveConfig('key', $key);
+		parent::install();
 	}
 
 }

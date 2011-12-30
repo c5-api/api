@@ -78,9 +78,19 @@ class ApiRequest {
 		if ($r->hasRoute()) {
 			extract($r->getRoute());
 			$txt = Loader::helper('text');
+			Loader::model('api_controller', C5_API_HANDLE);
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
 			$resp = new ApiResponse();
 			try {
+				$key = $_REQUEST['key'];
+				$res = self::authorize($key);
+				if(!$res) {
+					$resp = new ApiResponse();
+					$resp->setMessage('Unauthorized');
+					$resp->setError(true);
+					$resp->setCode(401);
+					$resp->send();
+				}
 				$ret = call_user_func_array(array('Api'.$controller, $action), $params);
 			} catch(Exception $e) {
 				throw new Exception($e->getMessage(), 500);
@@ -101,6 +111,11 @@ class ApiRequest {
 		$resp->setError(true);
 		$resp->setCode($e->getCode());
 		$resp->send();
+	}
+	
+	public static function authorize($key = '') {
+		$pkg = Package::getByHandle(C5_API_HANDLE);
+		return $pkg->config('key') == $key;
 	}
 	
 }
