@@ -17,17 +17,6 @@ class ApiRegister extends Object {
 			if(!$api['routeName']) {
 				$api['routeName'] = t('Unkown Route Name'); //we could make the name into a handle and do reverse routing...?
 			}
-			if(!$api['isResource']) {
-				$api['only'] = array();
-				$api['isResource'] = false;
-			} else {
-				if(!is_array($api['only'])) { //we are only accepting "only" in the future possibly "except"
-					$api['only'] = array();
-				}
-				$api['method'] = null;
-				$api['class'] = null;
-				$api['isResource'] = true;//prevent db errors
-			}
 			if(!is_array($api['via'])) {
 				$api['via'] = array();
 			}
@@ -35,7 +24,7 @@ class ApiRegister extends Object {
 				$api['filters'] = array();
 			}
 			$db = Loader::db();
-			$db->Execute('insert into ApiRouteRegistry (route, pkgHandle, routeName, aclass, method, via, afilter, enabled, isResource, only) values (?,?,?,?,?,?,?,?,?,?)', array($api['route'], $api['pkgHandle'], $api['routeName'], $api['class'], $api['method'], serialize($api['via']), serialize($api['filters']), $api['enabled'], $api['isResource'], serialize($api['only'])));
+			$db->Execute('insert into ApiRouteRegistry (route, pkgHandle, routeName, aclass, method, via, afilter, enabled) values (?,?,?,?,?,?,?,?)', array($api['route'], $api['pkgHandle'], $api['routeName'], $api['class'], $api['method'], serialize($api['via']), serialize($api['filters']), $api['enabled']));
 			$ID = $db->Insert_ID();
 			return self::getByID($ID);
 		}
@@ -63,12 +52,10 @@ class ApiRegister extends Object {
 	public function getPackageHandle() {return $this->pkgHandle;}
 	public function getRoute() {return $this->route;}
 	public function isEnabled() {return $this->enabled;}
-	public function isResource() {return $this->isResource;}
 	public function getName() {return $this->routeName;}
 	public function getMethod() {return $this->method;}
 	public function getClass() {return $this->aclass;}
 	public function getFilters() {return unserialize($this->afilter);}
-	public function getOnly() {return unserialize($this->only);}
 	public function getVia() {return unserialize($this->via);}
 
 	public static function getApiRouteList() {

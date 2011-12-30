@@ -178,51 +178,6 @@ final class ApiRouter {
     }
 
     /**
-     * Matches REST URL's for a given controller
-     * 
-     * @param string $controller The controller name
-     * @param array $args Accepts 'only' and 'except' keys. If given, function only matches given methods (or excludes them, depending on what key you gave).
-     */
-    public function resources($controller, array $args = array()) {
-        $routes = array(
-            'create' => array("/$controller", "$controller#create", array('via' => 'POST')),
-            'index' => array("/" . $controller, "$controller#index", array('via' => 'GET', 'as' => $controller)),
-            'new' => array("/$controller/new", "$controller#new", array('via' => 'GET', 'as' => $controller . '#new')),
-            'update' => array("/$controller/:id", "$controller#update", array('via' => 'PUT')),
-            'destroy' => array("/$controller/:id", "$controller#destroy", array('via' => 'DELETE')),
-            'show' => array("/$controller/:id", "$controller#show", array('via' => 'GET', 'as' => $controller . '#show')),
-            'edit' => array("/$controller/:id/edit", "$controller#edit", array('via' => 'GET'))
-        );
-
-
-        if (isset($args['only'])) {
-            // only route to specified methods
-            $only = explode(',', $args['only']);
-
-            foreach ($only as $o) {
-                if (isset($routes[$o]))
-                    $this->match($routes[$o][0], $routes[$o][1], $routes[$o][2]);
-            }
-
-            // abandon
-            return;
-        } elseif (isset($args['except'])) {
-
-            $except = explode(',', $args['except']);
-
-            // unset specified routes
-            foreach ($except as $e) {
-                unset($routes[$e]);
-            }
-        }
-
-        // loop all routes
-        foreach ($routes as $r) {
-            $this->match($r[0], $r[1], $r[2]);
-        }
-    }
-
-    /**
      * Reverse route a named route
      * 
      * @param string $route_name The name of the route to reverse route.

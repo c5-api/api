@@ -23,10 +23,5 @@
       <NOTNULL/>
       <DEFAULT value="1"/>      
     </field>
-    <field name="isResource" type="I1" size="1">
-      <NOTNULL/>
-      <DEFAULT value="0"/>      
-    </field>  
-    <field name="only" type="X2"/>
   </table>
 </schema>
