@@ -80,6 +80,28 @@ class ApiRegister extends Object {
 		}
 		return $apis;
 	}
+	
+	public static function getApiListByPackage($pkgHandle) {
+		$db = Loader::db();
+		$apis = array();
+		$r = $db->Execute('select ID from ApiRouteRegistry where pkgHandle = ? order by ID asc', array($pkgHandle));
+		while ($row = $r->FetchRow()) {
+			$apis[] = self::getByID($row['ID']);
+		}
+		return $apis;
+	}
+	
+	public static function removeByPackage($pkgHandle) {
+		$apis = self::getApiListByPackage($pkgHandle);
+		foreach($apis as $api) {
+			$api->remove();
+		}
+	}
+	
+	public function remove() {
+		$db = Loader::db();
+		$db->Execute('delete from ApiRouteRegistry where ID = ?', $this->ID);
+	}
 
 
 }
