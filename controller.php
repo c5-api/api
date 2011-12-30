@@ -16,7 +16,7 @@ class ApiPackage extends Package {
 	
 	public function on_start() {
 		if(!defined('BASE_API_PATH')) {
-			define('BASE_API_PATH', 'api');
+			define('BASE_API_PATH', '-/api');
 		}
 		define('C5_API_HANDLE', 'api');
 		Loader::model('api_routes', 'api');
