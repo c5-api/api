@@ -80,7 +80,11 @@ class ApiRequest {
 			$txt = Loader::helper('text');
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
 			$resp = new ApiResponse();
-			$ret = call_user_func_array(array('Api'.$controller, $action), $params);
+			try {
+				$ret = call_user_func_array(array('Api'.$controller, $action), $params);
+			} catch(Exception $e) {
+				throw new Exception($e->getMessage(), 500);
+			}
 			$resp->setData($ret);
 			$resp->send();
 			//herp
