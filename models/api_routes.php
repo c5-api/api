@@ -76,21 +76,26 @@ class ApiRequest {
 		}
 		
 		if ($r->hasRoute()) {
+			Events::fire('on_api_found_route', $r->getRoute());
 			extract($r->getRoute());
 			$txt = Loader::helper('text');
 			Loader::model('api_controller', C5_API_HANDLE);
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
 			$resp = new ApiResponse();
 			try {
-				$key = $_REQUEST['key'];
-				$res = self::authorize($key);
-				if(!$res) {
-					$resp = new ApiResponse();
-					$resp->setMessage('Unauthorized');
-					$resp->setError(true);
-					$resp->setCode(401);
-					$resp->send();
+				$auth = Events::fire('on_api_auth', $r->getRote()); //custom auth possibly, need to test
+				if($auth === null) {
+					$key = $_REQUEST['key'];
+					$res = self::authorize($key);
+					if(!$res) {
+						$resp = new ApiResponse();
+						$resp->setMessage(t('Unauthorized'));
+						$resp->setError(true);
+						$resp->setCode(401);
+						$resp->send();
+					}
 				}
+
 				$ret = call_user_func_array(array('Api'.$controller, $action), $params);
 			} catch(Exception $e) {
 				throw new Exception($e->getMessage(), 500);

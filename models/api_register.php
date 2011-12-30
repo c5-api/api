@@ -26,6 +26,7 @@ class ApiRegister extends Object {
 			$db = Loader::db();
 			$db->Execute('insert into ApiRouteRegistry (route, pkgHandle, routeName, aclass, method, via, afilter, enabled) values (?,?,?,?,?,?,?,?)', array($api['route'], $api['pkgHandle'], $api['routeName'], $api['class'], $api['method'], serialize($api['via']), serialize($api['filters']), $api['enabled']));
 			$ID = $db->Insert_ID();
+			Events::fire('on_api_add', self::getByID($ID));
 			return self::getByID($ID);
 		}
 		return false;
@@ -91,6 +92,10 @@ class ApiRegister extends Object {
 	
 	public function remove() {
 		$db = Loader::db();
+		$ret = Events::fire('on_api_before_remove', $this);
+		if($ret === false) {
+			return;
+		}
 		$db->Execute('delete from ApiRouteRegistry where ID = ?', array($this->ID));
 	}
 
