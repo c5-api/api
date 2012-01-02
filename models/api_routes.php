@@ -132,6 +132,8 @@ class ApiResponse {
 	private $error = false;
 	private $code = 200;//OK
 	private $format = 'json';
+	private $debug = true;//enables html responses
+	private $logging = false;//does nothing so far, log requests and data returned?
 	
 	public static function getInstance() {
 			static $instance;
@@ -173,6 +175,8 @@ class ApiResponse {
 	public function send() {
 		if($this->format == 'xml') {
 			echo $this->sendXml();
+		} else if($this->format == 'html' && $this->debug) {
+			echo $this->sendHtml();
 		} else {
 			echo $this->sendJson();
 		}
@@ -208,7 +212,7 @@ class ApiResponse {
 	
 	public function generateXml($xml, $data) {
 		foreach($data as $key => $value){
-	        if(preg_match('/(\d+)/',$key)) {
+	        if(preg_match('/(\d+)/',$key)) { //if its a number
 	        	$key = 'key_'.$key;
 	        }
 			if(is_array($value)){
@@ -220,5 +224,25 @@ class ApiResponse {
 	        $xml->writeElement($key, $value);
 	    }
 	}
-
+	
+	public function sendHtml() {
+		$html = '';
+		$html .= '<h2>%s</h2>';
+		$html .= '<code>%s</code>';
+		$html .= '<hr>';
+		$html .= '<h2>%s</h2>';
+		$html .= '<code>%s</code>';
+		$html .= '<hr>';
+		$html .= '<h2>%s</h2>';
+		$html .= '<code>%s</code>';
+		$html .= '<hr>';
+		$html .= '<h2>%s</h2>';
+		$html .= '<code>%s</code>';
+		
+		$txt = Loader::helper('text');
+		$html = sprintf($html, t('Code:'), intval($this->code), t('Error:'), $this->error, t('Message'), $txt->entities($this->message), t('Data:'), nl2br($txt->entities(print_r($this->data, true))));
+		return $html;
+		//return nl2br(print_r($this,true));//super debug O.o
+	
+	}
 }
