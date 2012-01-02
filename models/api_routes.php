@@ -82,13 +82,13 @@ class ApiRequest {
 			Loader::model('api_controller', C5_API_HANDLE);
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
 			$resp = new ApiResponse();
+			$resp->setFormat($_REQUEST['format']);//does nothing yet
 			try {
 				$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test
 				if($auth === null) {
 					$key = $_REQUEST['key'];
 					$res = self::authorize($key);
 					if(!$res) {
-						$resp = new ApiResponse();
 						$resp->setMessage(t('Unauthorized'));
 						$resp->setError(true);
 						$resp->setCode(401);
@@ -131,6 +131,11 @@ class ApiResponse {
 	private $message = 'OK';
 	private $error = false;
 	private $code = 200;//OK
+	private $format = 'json';
+
+	public function setFormat($data = 'json') {
+		$this->format = $data;
+	}
 
 	public function setData($data = null) {
 		if(!is_array($data) && !is_object($data)) {
@@ -157,6 +162,15 @@ class ApiResponse {
 	}
 
 	public function send() {
+		if($this->format == 'xml') {
+			echo $this->sendXml();
+		} else {
+			echo $this->sendJson();
+		}
+		exit;
+	}
+	
+	public function sendJson() {
 		$json = Loader::helper('json');
 		header('Content-type: application/json');
 		$response = array();
@@ -164,8 +178,35 @@ class ApiResponse {
 		$response['response']['error'] = $this->error;
 		$response['response']['message'] = $this->message;
 		$response['response']['data'] = $this->data;
-		echo $json->encode($response);
-		exit;
+		return $json->encode($response);
+	}
+	
+	public function sendXml() {
+		$xml = new XMLWriter();
+		$xml->openMemory();
+		$xml->startDocument('1.0', 'UTF-8');
+		$xml->startElement('response');
+		$xml->writeElement('code', intval($this->code));
+		$xml->writeElement('error', $this->error);
+		$xml->writeElement('message', $this->message);
+		$this->generateXml($xml, $this->data);
+		$xml->endElement();
+		return $xml->outputMemory(true);
+	}
+	
+	public function generateXml($xml, $data) {
+		foreach($data as $key => $value){
+	        if(preg_match('/(\d+)/',$key)) {
+	        	$key = 'key_'.$key;
+	        }
+			if(is_array($value)){
+	            $xml->startElement($key);
+	            $this->generateXml($xml, $value);
+	            $xml->endElement();
+	            continue;
+	        }
+	        $xml->writeElement($key, $value);
+	    }
 	}
 
 }
