@@ -83,7 +83,7 @@ class ApiRequest {
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
 			$resp = new ApiResponse();
 			try {
-				$auth = Events::fire('on_api_auth', $r->getRote()); //custom auth possibly, need to test
+				$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test
 				if($auth === null) {
 					$key = $_REQUEST['key'];
 					$res = self::authorize($key);
