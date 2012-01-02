@@ -4,19 +4,15 @@ class ApiRegister extends Object {
 
 	public static function add(array $api) {
 		
-		if(!$api['pkgHandle']) {
-			$api['pkgHandle'] = C5_API_HANDLE;//possibly change this to _error,
-		}
-		if(substr($api['pkgHandle'], 0, 4) != 'api_' && $api['pkgHandle'] != C5_API_HANDLE) { //must start with api_
-			return false;
-		}
-		
 		$api['route'] = trim($api['route'], '/ ');
 		if($api['route'] && !self::apiRouteExists($api['route'])) {
 			if(!isset($api['enabled']) || $api['enabled']) { //if it is not set, or it is set and is enabled set it to true (prevents db errors)
 				$api['enabled'] = true;
 			} else {
 				$api['enabled'] = false;
+			}
+			if(!$api['pkgHandle']) {
+				$api['pkgHandle'] = C5_API_HANDLE;//possibly change this to _error,
 			}
 			if(!$api['routeName']) {
 				$api['routeName'] = t('Unkown Route Name'); //we could make the name into a handle and do reverse routing...?
