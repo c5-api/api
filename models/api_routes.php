@@ -133,6 +133,9 @@ class ApiResponse {
 	private $code = 200;//OK
 
 	public function setData($data = null) {
+		if(!is_array($data) && !is_object($data)) {
+			$data = array($data);
+		}
 		$this->data = $data;
 	}
 	
@@ -141,9 +144,6 @@ class ApiResponse {
 	}
 	
 	public function setCode($data = 200) {
-		if(!is_array($data) && !is_object($data)) {
-			$data = array($data);
-		}
 		$this->code = $data;
 	}
 	
@@ -160,7 +160,7 @@ class ApiResponse {
 		$json = Loader::helper('json');
 		header('Content-type: application/json');
 		$response = array();
-		$response['response']['code'] = $this->code;
+		$response['response']['code'] = intval($this->code);
 		$response['response']['error'] = $this->error;
 		$response['response']['message'] = $this->message;
 		$response['response']['data'] = $this->data;
