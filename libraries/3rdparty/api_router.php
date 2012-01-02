@@ -110,7 +110,8 @@ final class ApiRouter {
 
         // check for matching URL
         $request_url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $request_url = strtolower(rtrim($request_url, '/'));
+        //$request_url = strtolower(rtrim($request_url, '/'));//temporary, all params were forced lowercase, but now /this/THING != /THIS/thing
+    	$request_url = rtrim($request_url, '/');
 
         // setup route regex for route url
         $route_regex = preg_replace_callback("/:(\w+)/", function($matches) use ($args) {
