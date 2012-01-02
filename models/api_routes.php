@@ -81,7 +81,7 @@ class ApiRequest {
 			$txt = Loader::helper('text');
 			Loader::model('api_controller', C5_API_HANDLE);
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
-			$resp = new ApiResponse();
+			$resp = ApiResponse::getInstance();
 			$resp->setFormat($_REQUEST['format']);//does nothing yet
 			try {
 				$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test
@@ -110,7 +110,7 @@ class ApiRequest {
 	
 	public function handleException(Exception $e) {
 		//print_r($e);
-		$resp = new ApiResponse();
+		$resp = ApiResponse::getInstance();
 		$resp->setData(array());
 		$resp->setMessage($e->getMessage());
 		$resp->setError(true);
@@ -132,6 +132,15 @@ class ApiResponse {
 	private $error = false;
 	private $code = 200;//OK
 	private $format = 'json';
+	
+	public static function getInstance() {
+			static $instance;
+			if (!isset($instance)) {
+				$v = __CLASS__;
+				$instance = new $v;
+			}
+			return $instance;
+	}
 
 	public function setFormat($data = 'json') {
 		$this->format = $data;
@@ -182,15 +191,18 @@ class ApiResponse {
 	}
 	
 	public function sendXml() {
+		header ("Content-Type:text/xml");
 		$xml = new XMLWriter();
 		$xml->openMemory();
 		$xml->startDocument('1.0', 'UTF-8');
-		$xml->startElement('response');
-		$xml->writeElement('code', intval($this->code));
-		$xml->writeElement('error', $this->error);
-		$xml->writeElement('message', $this->message);
-		$this->generateXml($xml, $this->data);
-		$xml->endElement();
+			$xml->startElement('response');
+				$xml->writeElement('code', intval($this->code));
+				$xml->writeElement('error', $this->error);
+				$xml->writeElement('message', $this->message);
+				$xml->startElement('data');
+					$this->generateXml($xml, $this->data);
+				$xml->endElement();
+			$xml->endElement();
 		return $xml->outputMemory(true);
 	}
 	
