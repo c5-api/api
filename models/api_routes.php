@@ -74,15 +74,14 @@ class ApiRequest {
 			//var_dump('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
 			$r->match('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
 		}
-		
+		$resp = ApiResponse::getInstance();
+		$resp->setFormat($_REQUEST['format']);
 		if ($r->hasRoute()) {
 			Events::fire('on_api_found_route', $r->getRoute());
 			extract($r->getRoute());
 			$txt = Loader::helper('text');
 			Loader::model('api_controller', C5_API_HANDLE);
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
-			$resp = ApiResponse::getInstance();
-			$resp->setFormat($_REQUEST['format']);//does nothing yet
 			try {
 				$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test
 				if($auth === null) {
