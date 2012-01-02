@@ -31,5 +31,20 @@ class ApiPackage extends Package {
 		$pkg->saveConfig('key', $key);
 		parent::install();
 	}
+	
+	public function uninstall() {
+		$force = $_POST['force'];
+		if($force != t('remove')) {
+			$force = false;
+		}
+		if(!$force) {
+			Loader::model('api_register', 'api');
+			$pkgs = ApiRegister::getPackageList();
+			if(count($pkgs) > 0) {
+				throw new Exception(t('Please uninstall all addons that register routes with the API, before uninstalling this addon.'));
+			}
+		}
+		parent::uninstall();
+	}
 
 }
