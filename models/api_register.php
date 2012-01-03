@@ -5,7 +5,7 @@ class ApiRegister extends Object {
 	public static function add(array $api) {
 		
 		$api['route'] = trim($api['route'], '/ ');
-		if($api['route'] && !self::apiRouteExists($api['route'])) {
+		if($api['route']/* && !self::apiRouteExists($api['route'])*/) {
 			if(!isset($api['enabled']) || $api['enabled']) { //if it is not set, or it is set and is enabled set it to true (prevents db errors)
 				$api['enabled'] = true;
 			} else {
