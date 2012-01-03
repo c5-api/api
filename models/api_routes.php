@@ -172,7 +172,7 @@ class ApiResponse {
 	}
 
 	public function send() {
-		if($this->format == 'xml') {
+		if($this->format == 'xml' && class_exists('XMLWriter')) {
 			echo $this->sendXml();
 		} else if($this->format == 'html' && $this->debug) {
 			echo $this->sendHtml();
