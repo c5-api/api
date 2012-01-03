@@ -100,7 +100,7 @@ class ApiRequest {
 				if($resp->debug) {
 					throw new Exception($e->getMessage(), 500);
 				} else {
-					throw new Exception('ERROR_INTERAL_ERROR', 500)
+					throw new Exception('ERROR_INTERAL_ERROR', 500);
 				}
 			}
 			$resp->setData($ret);
