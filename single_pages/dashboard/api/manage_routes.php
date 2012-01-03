@@ -14,44 +14,36 @@
 			else {
 			?>
 				<p><?php echo t('These API routes are available on your site:'); ?></p>
-			<?php
+				<div id="api_list" class="demo">
+					<ul>
+					<?php foreach($pkgs as $pkg) {
+							$pkgRts = ApiRegister::getApiListByPackage($pkg);
+					?>
+					<li id="<?php echo $pkg; ?>">
+						<a href="#"><?php echo $pkg; ?></a>
+						<ul>
+							<?php foreach($pkgRts as $pkgRt) { ?>
 
-				foreach($pkgs as $pkg) {
+							<li id="<?php echo $pkgRt->ID; ?>" class="jstree<?php if ($pkgRt->enabled === 1) { echo "-checked"; } ?>">
+								<a href="#"><?php echo $pkgRt->routeName; ?></a>
+							</li>
 
-				echo $pkg;
-				$pkgRts = ApiRegister::getApiListByPackage($pkg);
-				echo '<pre>';
-				echo print_r($pkgRts);
-				echo '</pre>';
+							<?php } ?>
 
-				}
+						</ul>
+
+						<?php
+
+						}
 			}
-?>
-<div id="demo1" class="demo">
-	<ul>
-		<li id="phtml_1">
-			<a href="#">API Routing Package</a>
-			<ul>
-				<li id="phtml_2" class="jstree-checked">
-					<a href="#">API Route</a>
-				</li>
-				<li id="phtml_3">
-					<a href="#">API Route</a>
-				</li>
-			</ul>
-		</li>
-		<li id="phtml_4">
-			<a href="#">API Routing Package</a>
-		</li>
-
-	</ul>
-
-</div>
+			?>
+					</ul>
+				</div>
 
 <script type="text/javascript" src="http://static.jstree.com/v.1.0pre/jquery.jstree.js"></script>
 <script>
 $(function () {
-    $("#demo1").jstree({"plugins" : [ "themes", "html_data", "checkbox", "sort", "ui" ]
+    $("#api_list").jstree({"plugins" : [ "themes", "html_data", "checkbox", "sort", "ui" ]
     });
 });
 </script>
