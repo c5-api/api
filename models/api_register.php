@@ -44,6 +44,9 @@ class ApiRegister extends Object {
 		}
 	}
 
+	/**
+	 * Unused now?
+	 */
 	private static function apiRouteExists($api) {
 		$db = Loader::db();
 		$r = $db->GetOne("select count(ID) from ApiRouteRegistry where route = ?", array($api));
@@ -88,6 +91,16 @@ class ApiRegister extends Object {
 		foreach($apis as $api) {
 			$api->remove();
 		}
+	}
+	
+	public static function getRoutesFromPath($route) {
+		$db = Loader::db();
+		$r = $db->Execute("select ID from ApiRouteRegistry where route = ?", array($route));
+		$arr = array();
+		while($row = $r->FetchRow()) {
+			$arr[] = self::getByID($row['ID']);
+		}
+		return $arr;
 	}
 	
 	public function remove() {
