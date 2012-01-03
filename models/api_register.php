@@ -106,8 +106,8 @@ class ApiRegister extends Object {
 	public function remove() {
 		$db = Loader::db();
 		$ret = Events::fire('on_api_before_remove', $this);
-		if($ret === false) {
-			return;
+		if($ret !== false) {
+			return false;
 		}
 		$db->Execute('delete from ApiRouteRegistry where ID = ?', array($this->ID));
 	}
