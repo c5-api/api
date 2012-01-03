@@ -15,7 +15,14 @@
 			?>
 				<p><?php echo t('These API routes are available on your site:'); ?></p>
 			<?php
+
 				foreach($pkgs as $pkg) {
+
+				echo $pkg;
+				$pkgRts = ApiRegister::getApiListByPackage($pkg);
+				echo '<pre>';
+				echo print_r($pkgRts);
+				echo '</pre>';
 
 				}
 			}
