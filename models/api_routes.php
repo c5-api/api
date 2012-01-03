@@ -88,7 +88,7 @@ class ApiRequest {
 					$key = $_REQUEST['key'];
 					$res = self::authorize($key);
 					if(!$res) {
-						$resp->setMessage(t('Unauthorized'));
+						$resp->setMessage('ERROR_UNAUTHORIZED');
 						$resp->setError(true);
 						$resp->setCode(401);
 						$resp->send();
@@ -97,13 +97,17 @@ class ApiRequest {
 
 				$ret = call_user_func_array(array('Api'.$controller, $action), $params);
 			} catch(Exception $e) {
-				throw new Exception($e->getMessage(), 500);
+				if($resp->debug) {
+					throw new Exception($e->getMessage(), 500);
+				} else {
+					throw new Exception('ERROR_INTERAL_ERROR', 500)
+				}
 			}
 			$resp->setData($ret);
 			$resp->send();
 			//herp
 		} else {
-			throw new Exception(t('Invalid Route!'), 501);
+			throw new Exception('ERROR_INVALID_ROUTE', 501);
 		}
 	}
 	
@@ -186,9 +190,9 @@ class ApiResponse {
 		$json = Loader::helper('json');
 		header('Content-type: application/json');
 		$response = array();
-		$response['response']['code'] = intval($this->code);
-		$response['response']['error'] = $this->error;
-		$response['response']['message'] = $this->message;
+		$response['response']['status']['code'] = intval($this->code);
+		$response['response']['status']['error'] = $this->error;
+		$response['response']['status']['message'] = $this->message;
 		$response['response']['data'] = $this->data;
 		return $json->encode($response);
 	}
@@ -199,9 +203,11 @@ class ApiResponse {
 		$xml->openMemory();
 		$xml->startDocument('1.0', 'UTF-8');
 			$xml->startElement('response');
-				$xml->writeElement('code', intval($this->code));
-				$xml->writeElement('error', $this->error);
-				$xml->writeElement('message', $this->message);
+				$xml->startElement('status');
+					$xml->writeElement('code', intval($this->code));
+					$xml->writeElement('error', $this->error);
+					$xml->writeElement('message', $this->message);
+				$xml->endElement();
 				$xml->startElement('data');
 					$this->generateXml($xml, $this->data);
 				$xml->endElement();
