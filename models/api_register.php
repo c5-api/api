@@ -17,8 +17,8 @@ class ApiRegister extends Object {
 			if(!$api['routeName']) {
 				$api['routeName'] = t('Unkown Route Name'); //we could make the name into a handle and do reverse routing...?
 			}
-			if(!is_array($api['via'])) {
-				$api['via'] = array();
+			if(!is_array($api['via']) || count($api['via']) == 0) {
+				$api['via'] = array('get', 'post', 'delete', 'put');
 			}
 			if(!is_array($api['filters'])) { //don't want stupid ppl adding strings
 				$api['filters'] = array();
