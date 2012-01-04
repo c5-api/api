@@ -33,23 +33,22 @@ class ApiRequest {
 			if($m != $p) {
 				return;
 			} else if($m == $p && $i == $mparts) {
-				try {
-					$self = new self();
-					$dirrel = strlen(DIR_REL.'/'.DISPATCHER_FILENAME);
-					if(substr($_SERVER['REQUEST_URI'], 0, $dirrel) == DIR_REL.'/'.DISPATCHER_FILENAME) { //pretty url hack
-						$path = DIR_REL.'/'.DISPATCHER_FILENAME.'/'.BASE_API_PATH;
-					} else {
-						$path = DIR_REL.'/'.BASE_API_PATH;
-					}
-					$self->dispatch($path);//we pass it to the actuall proccessing - not sure what I should be passing here
-				} catch (Exception $e) {
-					$self->handleException($e);
+				$self = new self();
+				$dirrel = strlen(DIR_REL.'/'.DISPATCHER_FILENAME);
+				if(substr($_SERVER['REQUEST_URI'], 0, $dirrel) == DIR_REL.'/'.DISPATCHER_FILENAME) { //pretty url hack
+					$path = DIR_REL.'/'.DISPATCHER_FILENAME.'/'.BASE_API_PATH;
+				} else {
+					$path = DIR_REL.'/'.BASE_API_PATH;
 				}
+				$self->dispatch($path);
 			}
 		}
 	}
 	
 	public function dispatch($path = null) {
+		if(!defined('API_REQUEST_METHOD')) {
+			define('API_REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
+		}
 		$r = new ApiRouter($path);//what do I pass here?
 
 		Loader::model('api_register', C5_API_HANDLE);
@@ -83,27 +82,27 @@ class ApiRequest {
 			Loader::model('api_controller', C5_API_HANDLE);
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
 			try {
-				$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test, should throw error and send to end execution
-				//comment the below line for auth
-				$auth = true;
-				if($auth === false) {
-					$key = $_REQUEST['key'];
-					$res = self::authorize($key);
-					if(!$res) {
-						$resp->setMessage('ERROR_UNAUTHORIZED');
-						$resp->setError(true);
-						$resp->setCode(401);
-						$resp->send();
+				try {
+					$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test, should throw error and send to end execution
+					//comment the below line for auth
+					$auth = true;
+					if($auth === false) {
+						$key = $_REQUEST['key'];
+						$res = self::authorize($key);
+						if(!$res) {
+							$resp->setMessage('ERROR_UNAUTHORIZED');
+							$resp->setError(true);
+							$resp->setCode(401);
+							$resp->send();
+						}
 					}
-				}
-
-				$ret = call_user_func_array(array('Api'.$controller, $action), $params);
-			} catch(Exception $e) {
-				if($resp->debug) {
+	
+					$ret = call_user_func_array(array('Api'.$controller, $action), $params);
+				} catch(Exception $e) {
 					throw new Exception($e->getMessage(), 500);
-				} else {
-					throw new Exception('ERROR_INTERAL_ERROR', 500);
 				}
+			} catch(Exception $e) {
+				$resp->handleException($e);
 			}
 			$resp->setData($ret);
 			$resp->send();
@@ -111,16 +110,6 @@ class ApiRequest {
 		} else {
 			throw new Exception('ERROR_INVALID_ROUTE', 501);
 		}
-	}
-	
-	public function handleException(Exception $e) {
-		//print_r($e);
-		$resp = ApiResponse::getInstance();
-		$resp->setData(array());
-		$resp->setMessage($e->getMessage());
-		$resp->setError(true);
-		$resp->setCode($e->getCode());
-		$resp->send();
 	}
 	
 	public static function authorize($key = '') {
@@ -147,6 +136,19 @@ class ApiResponse {
 				$instance = new $v;
 			}
 			return $instance;
+	}
+
+	public function handleException(Exception $e) {
+		//print_r($e);
+		$this->setData(array());
+		if($this->debug) {
+			$this->setMessage($e->getMessage());
+		} else {
+			$this->setMessage('ERROR_INTERAL_ERROR');
+		}
+		$this->setError(true);
+		$this->setCode($e->getCode());
+		$this->send();
 	}
 
 	public function setFormat($data = 'json') {
