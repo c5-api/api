@@ -1,19 +1,60 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 
+/**
+ * concrete5 API
+ * This is the basic package class extended into the api package
+ *
+ * @category Api
+ * @package  ApiCore
+ * @author   Michael Krasnow <mnkras@gmail.com>
+ * @author   Lucas Anderson <lucas@lucasanderson.com>
+ * @copyright 2011-2012 Michael Krasnow and Lucas Anderson
+ * @license  See License.txt
+ * @link     http://c5api.com
+ */
 class ApiPackage extends Package {
 
+	/**
+	 * @var string The handle of the package
+	 */
 	protected $pkgHandle = 'api';
+	
+	/**
+	 * @var string Minimum version of concrete5 required
+	 */
 	protected $appVersionRequired = '5.5.0';
+	
+	/**
+	 * @var string Version of the package
+	 */
 	protected $pkgVersion = '1.0';
-
+	
+    /**
+     * Returns the package name
+     *
+     * @return string
+     */
 	public function getPackageName() {
 		return t("Api");
 	}
 
+    /**
+     * Returns the package description
+     *
+     * @return string
+     */
 	public function getPackageDescription() {
 		return t("Provides an external API for remote management of your site. Allows integration into 3rd party applications.");
 	}
 
+    /**
+     * Fired by concrete5
+     *
+     * The constant "BASE_API_PATH" is defined here and is by default set to "-/api".
+     * We then use events and call the parseRequest method of the ApiRequest model
+     *
+     * @return void
+     */
 	public function on_start() {
 		if(!defined('BASE_API_PATH')) {
 			define('BASE_API_PATH', '-/api');
@@ -24,6 +65,14 @@ class ApiPackage extends Package {
 		Events::extend('on_before_render', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api_routes.php');
 	}
 
+    /**
+     * Called by concrete5 to install the package
+     *
+     * We generate the auth key (24 chars long).
+     * We add all dashboard singlepages
+     *
+     * @return void
+     */
 	public function install() {
 		$pkg = parent::install();
 		$vh = Loader::helper('validation/identifier');
@@ -36,6 +85,13 @@ class ApiPackage extends Package {
 		$p2->update(array('cName'=>t('Manage Routes'), 'cDescription'=>t('Managed installed API routes.')));
 	}
 
+    /**
+     * Called by concrete5 to uninstall the package
+     *
+     * We check if any other packages are installed that are using the api, if not uninstall.
+     *
+     * @return void
+     */
 	public function uninstall() {
 		$force = $_POST['force'];
 		if($force != t('remove')) {
