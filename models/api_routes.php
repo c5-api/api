@@ -83,7 +83,7 @@ class ApiRequest {
 			Loader::model('api_controller', C5_API_HANDLE);
 			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
 			try {
-				$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test
+				$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test, should throw error and send to end execution
 				//comment the below line for auth
 				$auth = true;
 				if($auth === false) {
