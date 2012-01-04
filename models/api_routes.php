@@ -108,7 +108,11 @@ class ApiRequest {
 			$resp->send();
 			//herp
 		} else {
-			throw new Exception('ERROR_INVALID_ROUTE', 501);
+			try { //find a better way to do this
+				throw new Exception('ERROR_INVALID_ROUTE', 501);
+			} catch(Exception $e) {
+				$resp->handleException($e);
+			}
 		}
 	}
 	
