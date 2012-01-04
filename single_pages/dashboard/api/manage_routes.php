@@ -40,13 +40,4 @@
 					</ul>
 				</div>
 
-<script type="text/javascript" src="http://static.jstree.com/v.1.0pre/jquery.jstree.js"></script>
-<script>
-$(function () {
-    $("#api_list").jstree({"plugins" : [ "themes", "html_data", "checkbox", "sort", "ui" ]
-    });
-});
-</script>
-<div class="ccm-spacer"></div>
-
 <?=Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper();?>
