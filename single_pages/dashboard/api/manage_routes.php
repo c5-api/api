@@ -1,5 +1,5 @@
-
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Manage Routes'))?>
+<?php defined('C5_EXECUTE') or die('Access Denied.'); ?>
+<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Manage Routes'), false, 'span10 offset3')?>
 
 <h3><?php echo t('Installed Routes'); ?></h3>
 

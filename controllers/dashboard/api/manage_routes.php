@@ -1,4 +1,4 @@
-<?php class DashboardManageRoutes extends Controller {
+<?php defined('C5_EXECUTE') or die('Access Denied.');
+class DashboardApiManageRoutesController extends DashboardBaseController {
 
 }
-?>
