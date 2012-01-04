@@ -24,7 +24,7 @@
 						<ul>
 							<?php foreach($pkgRts as $pkgRt) { ?>
 
-							<li id="<?php echo $pkgRt->ID; ?>" class="jstree<?php if ($pkgRt->enabled === 1) { echo "-checked"; } ?>">
+							<li id="<?php echo $pkgRt->ID; ?>" class="jstree<?php if ($pkgRt->enabled == '1') { echo "-checked"; } ?>">
 								<a href="#"><?php echo $pkgRt->routeName; ?></a>
 							</li>
 
