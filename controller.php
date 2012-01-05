@@ -18,17 +18,17 @@ class ApiPackage extends Package {
 	 * @var string The handle of the package
 	 */
 	protected $pkgHandle = 'api';
-	
+
 	/**
 	 * @var string Minimum version of concrete5 required
 	 */
 	protected $appVersionRequired = '5.5.0';
-	
+
 	/**
 	 * @var string Version of the package
 	 */
 	protected $pkgVersion = '1.0';
-	
+
     /**
      * Returns the package name
      *
@@ -104,6 +104,9 @@ class ApiPackage extends Package {
 				throw new Exception(t('Please uninstall all addons that register routes with the API, before uninstalling this addon.'));
 			}
 		}
+		$db = Loader::db();
+		$db_sql = 'DROP TABLE IF EXISTS apirouteregistry';
+		$db->Execute($db_sql);
 		$pkg = parent::uninstall();
 	}
 
