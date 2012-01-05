@@ -105,7 +105,7 @@ class ApiPackage extends Package {
 			}
 		}
 		$db = Loader::db();
-		$db_sql = 'DROP TABLE IF EXISTS apirouteregistry';
+		$db_sql = 'DROP TABLE IF EXISTS ApiRouteRegistry';
 		$db->Execute($db_sql);
 		$pkg = parent::uninstall();
 	}
