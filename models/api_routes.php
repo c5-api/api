@@ -71,6 +71,8 @@ class ApiRequest {
 	public function dispatch($path = null) {
 		if(!defined('API_REQUEST_METHOD')) {
 			define('API_REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
+		} else {
+			$_SERVER['REQUEST_METHOD'] = API_REQUEST_METHOD;
 		}
 		$r = new ApiRouter($path);//what do I pass here?
 
@@ -79,6 +81,10 @@ class ApiRequest {
 		foreach($list as $api) {
 			//print_r($api);
 			if(!$api->isEnabled()) {
+				continue;
+			}
+			$ve = $api->getViaEnabled();
+			if(!isset($ve[API_REQUEST_METHOD])) {
 				continue;
 			}
 			$params = array();
