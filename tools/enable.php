@@ -9,6 +9,7 @@ if(!$cp->canRead()) {
 $id = $_POST['ID'];
 $pkg = $_POST['pkg'];
 $re = $_POST['enabled'];
+//print_r($_POST);
 if(is_string($pkg)) {
 	if(is_object(Package::getByHandle($pkg))) {
 		Loader::model('api_register', C5_API_HANDLE);
@@ -22,6 +23,7 @@ if(is_string($pkg)) {
 	echo '1';
 	exit;
 }
+
 if(!intval($id)) {
 	die(t('Invalid Route ID'));
 } else {

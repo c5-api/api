@@ -33,7 +33,7 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 					}
 				} else {
 					data = {
-						pkg : en.attr("data-id"),
+						ID : en.attr("data-id"),
 						enabled : 1
 					}
 				}
@@ -57,7 +57,7 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 					}
 				} else {
 					data = {
-						pkg : en.attr("data-id"),
+						ID : en.attr("data-id"),
 						enabled : 0
 					}
 				}
