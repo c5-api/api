@@ -15,7 +15,17 @@ $api = ApiRegister::getByID($id);
 if(!is_object($api)) {
 	die(t('Invalid Route ID'));
 }
-print_r($api);
+//print_r($api);
+$via = $api->getVia();
+$enabled = $api->getViaEnabled();
+foreach($via as $type) {
+	if(isset($enabled[$type])) {
+		$checked = ' checked="checked"';
+	} else {
+		$checked = '';
+	}
+	echo '<input id="'.strtoupper($type).'" type="checkbox" name="'.strtoupper($type).'"'.$checked.'/><label for="'.strtoupper($type).'">'.strtoupper($type).'</label>';
+}
 ?>
 
 <div class="dialog-buttons">

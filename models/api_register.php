@@ -55,8 +55,9 @@ class ApiRegister extends Object {
 			if(!is_array($api['filters'])) { //don't want stupid ppl adding strings
 				$api['filters'] = array();
 			}
+			$api['viaEnabled'] = $api['via'];
 			$db = Loader::db();
-			$db->Execute('insert into ApiRouteRegistry (route, pkgHandle, routeName, aclass, method, via, afilter, enabled) values (?,?,?,?,?,?,?,?)', array($api['route'], $api['pkgHandle'], $api['routeName'], $api['class'], $api['method'], serialize($api['via']), serialize($api['filters']), $api['enabled']));
+			$db->Execute('insert into ApiRouteRegistry (route, pkgHandle, routeName, aclass, method, via, afilter, enabled, viaEnabled) values (?,?,?,?,?,?,?,?,?)', array($api['route'], $api['pkgHandle'], $api['routeName'], $api['class'], $api['method'], serialize($api['via']), serialize($api['filters']), $api['enabled'], serialize($api['viaEnabled'])));
 			$ID = $db->Insert_ID();
 			Events::fire('on_api_add', self::getByID($ID));
 			return self::getByID($ID);
@@ -105,6 +106,7 @@ class ApiRegister extends Object {
 	public function getClass() {return $this->aclass;}
 	public function getFilters() {return unserialize($this->afilter);}
 	public function getVia() {return unserialize($this->via);}
+	public function getViaEnabled() {return unserialize($this->viaEnabled);}
 
 	/**
 	 * Gets an array of all APIs

@@ -23,5 +23,8 @@
       <NOTNULL/>
       <DEFAULT value="1"/>      
     </field>
+    <field name="viaEnabled" type="X2">
+    	<NOTNULL/>
+    </field>
   </table>
 </schema>
