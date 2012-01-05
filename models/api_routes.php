@@ -84,7 +84,8 @@ class ApiRequest {
 				continue;
 			}
 			$ve = $api->getViaEnabled();
-			if(!isset($ve[API_REQUEST_METHOD])) {
+
+			if(!in_array(strtolower(API_REQUEST_METHOD), $ve)) {
 				continue;
 			}
 			$params = array();
