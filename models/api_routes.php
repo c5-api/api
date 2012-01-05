@@ -74,7 +74,7 @@ class ApiRequest {
 		} else {
 			$_SERVER['REQUEST_METHOD'] = API_REQUEST_METHOD;
 		}
-		$r = new ApiRouter($path);//what do I pass here?
+		$r = new ApiRouter($path);
 
 		Loader::model('api_register', C5_API_HANDLE);
 		$list = ApiRegister::getApiRouteList();

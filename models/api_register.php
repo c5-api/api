@@ -108,6 +108,65 @@ class ApiRegister extends Object {
 	public function getVia() {return unserialize($this->via);}
 	public function getViaEnabled() {return unserialize($this->viaEnabled);}
 
+	public function setPackageHandle($data) {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiRouteRegistry SET pkgHandle = ? WHERE ID = ?', array($data, $this->ID));
+		return self::getByID($this->ID);
+	}
+	
+	public function setRoute($data) {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiRouteRegistry SET route = ? WHERE ID = ?', array($data, $this->ID));
+		return self::getByID($this->ID);
+	}
+
+	public function setEnabled($data = true) {
+		$db = Loader::db();
+		if($data) {
+			$data = true;
+		} else {
+			$data = false;
+		}
+		$db->Execute('UPDATE ApiRouteRegistry SET enabled = ? WHERE ID = ?', array($data, $this->ID));
+		return self::getByID($this->ID);
+	}
+	
+	public function setName($data) {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiRouteRegistry SET routeName = ? WHERE ID = ?', array($data, $this->ID));
+		return self::getByID($this->ID);
+	}
+	
+	public function setMethod($data) {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiRouteRegistry SET method = ? WHERE ID = ?', array($data, $this->ID));
+		return self::getByID($this->ID);
+	}
+	
+	public function setClass($data) {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiRouteRegistry SET aclass = ? WHERE ID = ?', array($data, $this->ID));
+		return self::getByID($this->ID);
+	}
+	
+	public function setFilters(array $data) {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiRouteRegistry SET pkgHandle = ? WHERE ID = ?', array(serialize($data), $this->ID));
+		return self::getByID($this->ID);
+	}
+	
+	public function setVia(array $data) {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiRouteRegistry SET via = ? WHERE ID = ?', array(strtolower(serialize($data)), $this->ID));
+		return self::getByID($this->ID);
+	}
+
+	public function setViaEnabled(array $data) {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiRouteRegistry SET viaEnabled = ? WHERE ID = ?', array(strtolower(serialize($data)), $this->ID));
+		return self::getByID($this->ID);
+	}
+
 	/**
 	 * Gets an array of all APIs
 	 * 
