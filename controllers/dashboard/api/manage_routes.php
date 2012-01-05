@@ -6,6 +6,7 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 		$this->addFooterItem($html->javascript('http://static.jstree.com/v.1.0pre/jquery.jstree.js'));
 		$this->addFooterItem('<script type="text/javascript">
 			$(function () {
+				$(".vias").dialog();
     			$("#api_list").jstree({
     				"plugins" : [ "themes", "html_data", "checkbox", "sort", "ui" ]
    				});
@@ -13,7 +14,7 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 			$("#api_list").bind("select_node.jstree", function (e, data) {
 				//var href = data.rslt.obj.children("a").attr("href");
 				//$("#modify_vias").load(href);
-				$("#terms").dialog({modal:true});
+				//$("#terms").dialog({modal:true});
 			})
 			$("#api_list").bind("check_node.jstree", function(e, data) {
 				$("#status").html("<BR>clicked and " + node_is_check(data));

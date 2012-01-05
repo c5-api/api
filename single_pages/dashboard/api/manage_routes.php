@@ -35,10 +35,11 @@ else {
 					<li id="<?php echo $pkg; ?>">
 						<a href="javascript:void(0);" title="<?php echo $pDesc; ?>"><?php echo $pName; ?></a>
 						<ul>
-							<?php foreach($pkgRts as $pkgRt) { ?>
+							<?php $urls = Loader::helper('concrete/urls');
+							foreach($pkgRts as $pkgRt) { ?>
 
-							<li id="<?php echo $pkgRt->getID(); ?>" class="jstree<?php if ($pkgRt->isEnabled() == '1') { echo "-checked"; } ?>">
-								<a href="<?php echo $this->url('/dashboard/manage_routes/vias/',$pkgRt->getID()); ?>"><?php echo $pkgRt->getName(); ?></a>
+							<li id="r<?php echo $pkgRt->getID(); ?>" class="jstree<?php if ($pkgRt->isEnabled() == '1') { echo "-checked"; } ?>">
+								<a class="vias" dialog-title="<?php echo t('Allowed Request Methods')?>" dialog-append-buttons="true" href="<?php echo $urls->getToolsURL('vias', C5_API_HANDLE).'?ID='.$pkgRt->getID(); ?>"><?php echo $pkgRt->getName(); ?></a>
 							</li>
 
 							<?php } ?>
