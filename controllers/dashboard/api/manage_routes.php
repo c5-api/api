@@ -26,7 +26,18 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 			$("#api_list").bind("check_node.jstree", function(e, data) {
 				var en = data.rslt.obj.children("a");
 				jQuery.fn.dialog.showLoader();
-				$.post("'.Loader::helper('concrete/urls')->getToolsURL('enable', C5_API_HANDLE).'", { ID:en.attr("data-id"), enabled:1 }, function(data) {
+				if(en.attr("data-pkg")) {
+					data = {
+						pkg : en.attr("data-pkg"),
+						enabled : 1
+					}
+				} else {
+					data = {
+						pkg : en.attr("data-id"),
+						enabled : 1
+					}
+				}
+				$.post("'.Loader::helper('concrete/urls')->getToolsURL('enable', C5_API_HANDLE).'", data, function(data) {
 					if(data == 1) {
 						jQuery.fn.dialog.hideLoader();
 					} else {
@@ -39,7 +50,18 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 			$("#api_list").bind("uncheck_node.jstree", function(e, data) {
 				var en = data.rslt.obj.children("a");
 				jQuery.fn.dialog.showLoader();
-				$.post("'.Loader::helper('concrete/urls')->getToolsURL('enable', C5_API_HANDLE).'", { ID:en.attr("data-id"), enabled:0 }, function(data) {
+				if(en.attr("data-pkg")) {
+					data = {
+						pkg : en.attr("data-pkg"),
+						enabled : 0
+					}
+				} else {
+					data = {
+						pkg : en.attr("data-id"),
+						enabled : 0
+					}
+				}
+				$.post("'.Loader::helper('concrete/urls')->getToolsURL('enable', C5_API_HANDLE).'", data, function(data) {
 					if(data == 1) {
 						jQuery.fn.dialog.hideLoader();
 					} else {
@@ -49,21 +71,7 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 					}
 				});
 			});
-
-			/*function node_is_check(object) {
-
-				if (object.inst.is_checked(object.rslt.obj)) {
-					return "checked"
-				} else {
-					return "not checked";
-				}
-			}*/
 	</script>');
-	}
-
-	public function vias() {
-	Loader::model('api_register', 'api');
-	$pkgs = ApiRegister::getPackageList();
 	}
 
 }

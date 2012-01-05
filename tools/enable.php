@@ -6,18 +6,30 @@ if(!$cp->canRead()) {
 	die(t('Access Denied'));
 }
 
-$id = $_REQUEST['ID'];
+$id = $_POST['ID'];
+$pkg = $_POST['pkg'];
+$re = $_POST['enabled'];
+if(is_string($pkg)) {
+	if(is_object(Package::getByHandle($pkg))) {
+		Loader::model('api_register', C5_API_HANDLE);
+	} else {
+		die(t('Invalid Package'));
+	}
+	$list = ApiRegister::getApiListByPackage($pkg);
+	foreach($list as $api) {
+		$api->setEnabled($re);
+	}
+	echo '1';
+	exit;
+}
 if(!intval($id)) {
 	die(t('Invalid Route ID'));
-}
-Loader::model('api_register', C5_API_HANDLE);
-$api = ApiRegister::getByID($id);
-if(!is_object($api)) {
-	die(t('Invalid Route ID'));
-}
-if(isset($_POST['ID'])) {
-	$re = $_POST['enabled'];
-	//print_r($_POST);
+} else {
+	Loader::model('api_register', C5_API_HANDLE);
+	$api = ApiRegister::getByID($id);
+	if(!is_object($api)) {
+		die(t('Invalid Route ID'));
+	}
 	$api->setEnabled($re);
 	echo '1';
 	exit;
