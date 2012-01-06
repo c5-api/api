@@ -8,6 +8,11 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 			$(function () {
 				//$(".vias").dialog();
     			$("#api_list").jstree({
+    				"themes" : {
+            			"theme" : "default",
+            			"dots" : false,
+            			"icons" : true
+        			},
     				"plugins" : [ "themes", "html_data", "checkbox", "sort", "ui" ]
    				});
 			});
