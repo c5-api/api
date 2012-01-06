@@ -26,7 +26,7 @@
 							$pHandle = $p->getPackageHandle();
 					?>
 					<li id="p<?php echo $pkg; ?>">
-						<a data-pkg="<?php echo $pHandle?>" href="javascript:void(0);" title="<?php echo $pDesc; ?>"><?php echo $pName; ?></a>
+						<a data-pkg="<?php echo $pHandle?>" href="javascript:void(0);" title="<?php echo $pDesc; ?>"><?php echo $pName; ?> | <?php echo $pDesc?></a>
 						<ul>
 							<?php $urls = Loader::helper('concrete/urls');
 							foreach($pkgRts as $pkgRt) { ?>

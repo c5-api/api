@@ -6,7 +6,6 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 		$this->addFooterItem($html->javascript('http://static.jstree.com/v.1.0pre/jquery.jstree.js'));
 		$this->addFooterItem('<script type="text/javascript">
 			$(function () {
-				//$(".vias").dialog();
     			$("#api_list").jstree({
     				"themes" : {
             			"theme" : "default",
