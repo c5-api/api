@@ -59,7 +59,8 @@ function submit_request_form() {
 	$.post(form.attr('action'), form.serialize(), function(data) {
 		if(data == 1) {
 			jQuery.fn.dialog.hideLoader();
-			jQuery.fn.dialog.closeTop();
+			$('#stat').addClass('alert-message success').html('<?php echo t('Methods Saved.')?>');
+			setTimeout("jQuery.fn.dialog.closeTop()", 1500);
 		} else {
 			jQuery.fn.dialog.hideLoader();
 			$('#stat').addClass('alert-message error').html('<?php echo t('An Unknown Error Occured.')?>');

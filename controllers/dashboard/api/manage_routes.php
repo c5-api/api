@@ -13,6 +13,10 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 			});
 			$("#api_list").bind("select_node.jstree", function (e, data) {
 				var via = data.rslt.obj.children("a");
+				if(via.attr("data-pkg")) {
+					$("#api_list").jstree("toggle_node", via);
+					return;
+				}
 				obj = {
 					modal: true,
 					href: via.attr("href"),
@@ -40,9 +44,10 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 				$.post("'.Loader::helper('concrete/urls')->getToolsURL('enable', C5_API_HANDLE).'", data, function(data) {
 					if(data == 1) {
 						jQuery.fn.dialog.hideLoader();
+						$("#status").addClass("alert-message success").removeClass("error").html("'.t('Route successfully updated.').'");
 					} else {
 						jQuery.fn.dialog.hideLoader();
-						$("#status").addClass("alert-message error").html("'.t('An Unknown Error Occured.').'");
+						$("#status").addClass("alert-message error").removeClass("success").html("'.t('An Unknown Error Occured.').'");
 						console.log(data);
 					}
 				});
@@ -64,9 +69,10 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
 				$.post("'.Loader::helper('concrete/urls')->getToolsURL('enable', C5_API_HANDLE).'", data, function(data) {
 					if(data == 1) {
 						jQuery.fn.dialog.hideLoader();
+						$("#status").addClass("alert-message success").removeClass("error").html("'.t('Route successfully updated.').'");
 					} else {
 						jQuery.fn.dialog.hideLoader();
-						$("#status").addClass("alert-message error").html("'.t('An Unknown Error Occured.').'");
+						$("#status").addClass("alert-message error").removeClass("success").html("'.t('An Unknown Error Occured.').'");
 						console.log(data);
 					}
 				});

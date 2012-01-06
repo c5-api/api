@@ -32,7 +32,7 @@
 							foreach($pkgRts as $pkgRt) { ?>
 
 							<li id="r<?php echo $pkgRt->getID(); ?>" class="jstree<?php if ($pkgRt->isEnabled() == '1') { echo "-checked"; } ?>">
-								<a class="vias" data-ID="<?php echo $pkgRt->getID(); ?>" dialog-title="<?php echo t('Allowed Request Methods')?>" dialog-append-buttons="true" dialog-width="250" dialog-height="200" href="<?php echo $urls->getToolsURL('vias', C5_API_HANDLE).'?ID='.$pkgRt->getID(); ?>"><?php echo $pkgRt->getName(); ?></a>
+								<a class="vias" data-ID="<?php echo $pkgRt->getID(); ?>" dialog-title="<?php echo t('Allowed Request Methods')?>" dialog-append-buttons="true" dialog-width="250" dialog-height="250" href="<?php echo $urls->getToolsURL('vias', C5_API_HANDLE).'?ID='.$pkgRt->getID(); ?>"><?php echo $pkgRt->getName(); ?></a>
 							</li>
 
 							<?php } ?>
