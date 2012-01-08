@@ -413,7 +413,7 @@ class ApiResponse {
 	        if(preg_match('/(\d+)/',$key)) { //if its a number
 	        	$key = 'key_'.$key;
 	        }
-			if(is_array($value)){
+			if(is_array($value) || is_object($value)){
 	            $xml->startElement($key);
 	            $this->generateXml($xml, $value);
 	            $xml->endElement();
