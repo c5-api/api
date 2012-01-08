@@ -258,10 +258,10 @@ class ApiResponse {
 	 * @return void
 	 */	
 	public function setData($data = null) {
-		if(!is_array($data) && !is_object($data) && is_string($data) || is_int($data)) {
+		if(is_string($data) || is_int($data)) {
 			$data = array($data);
-		} else {
-			$data = array();
+		} else if(!is_array($data) && !is_object($data)) {
+				$data = array();
 		}
 		$this->data = $data;
 	}
