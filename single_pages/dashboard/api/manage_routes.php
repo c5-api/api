@@ -17,7 +17,7 @@
 				<div id="status"></div>
 				<p><?php echo t('These API routes are available on your site:'); ?></p>
 				<div id="api_list" class="demo">
-					<ul>
+					<ul id="api_list_ul" style="display:none">
 					<?php foreach($pkgs as $pkg) {
 							$pkgRts = ApiRegister::getApiListByPackage($pkg);
 							$p = Package::getByHandle($pkg);

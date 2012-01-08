@@ -14,6 +14,7 @@ class DashboardApiManageRoutesController extends DashboardBaseController {
         			},
     				"plugins" : [ "themes", "html_data", "checkbox", "sort", "ui" ]
    				});
+   				$("#api_list_ul").show();
 			});
 			$("#api_list").bind("select_node.jstree", function (e, data) {
 				var via = data.rslt.obj.children("a");
