@@ -443,7 +443,7 @@ class ApiResponse {
 		$html .= '<pre>%s</pre>';
 		
 		$txt = Loader::helper('text');
-		$html = sprintf($html, t('Code:'), intval($this->code), t('Error:'), $this->error, t('Message'), $txt->entities($this->message), t('Data:'), nl2br($txt->entities(print_r($this->data, true))));
+		$html = sprintf($html, t('Code:'), intval($this->code), t('Error:'), $this->error, t('Message'), $txt->entities($this->message), t('Data:'), $txt->entities(print_r($this->data, true)));
 		return $html;
 		//return nl2br(print_r($this,true));//super debug O.o
 	
