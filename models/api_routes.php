@@ -440,7 +440,7 @@ class ApiResponse {
 		$html .= '<code>%s</code>';
 		$html .= '<hr>';
 		$html .= '<h2>%s</h2>';
-		$html .= '<code>%s</code>';
+		$html .= '<pre>%s</pre>';
 		
 		$txt = Loader::helper('text');
 		$html = sprintf($html, t('Code:'), intval($this->code), t('Error:'), $this->error, t('Message'), $txt->entities($this->message), t('Data:'), nl2br($txt->entities(print_r($this->data, true))));
