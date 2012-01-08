@@ -110,14 +110,14 @@ class ApiRequest {
 			extract($r->getRoute());
 			$txt = Loader::helper('text');
 			Loader::model('api_controller', C5_API_HANDLE);
-			Loader::model('api/'.$txt->handle($controller), $pkgHandle);
+			Loader::model('api/'.$txt->uncamelcase($controller), $pkgHandle);
 			try {
 				try {
 					$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test, should throw error and send to end execution
 					//comment the below line for auth
 					$auth = true;
 					if($auth === false) {
-						$key = $_REQUEST['key'];
+						$key = $_REQUEST['auth'];
 						$res = self::authorize($key);
 						if(!$res) {
 							$resp->setMessage('ERROR_UNAUTHORIZED');
@@ -258,8 +258,10 @@ class ApiResponse {
 	 * @return void
 	 */	
 	public function setData($data = null) {
-		if(!is_array($data) && !is_object($data)) {
+		if(!is_array($data) && !is_object($data) && is_string($data) || is_int($data)) {
 			$data = array($data);
+		} else {
+			$data = array();
 		}
 		$this->data = $data;
 	}
