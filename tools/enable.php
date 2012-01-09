@@ -5,7 +5,11 @@ $cp = new Permissions($c);
 if(!$cp->canRead()) {
 	die(t('Access Denied'));
 }
-
+$token = $_REQUEST['token'];
+$valt = Loader::helper('validation/token');
+if(!$valt->validate('api_enable', $token)) {
+	die($valt->getErrorMessage());
+}
 $id = $_POST['ID'];
 $pkg = $_POST['pkg'];
 $re = $_POST['enabled'];

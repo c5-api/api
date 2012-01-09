@@ -6,7 +6,12 @@ if(!$cp->canRead()) {
 	die(t('Access Denied'));
 }
 
+$valt = Loader::helper('validation/token');
 $id = $_REQUEST['ID'];
+$token = $_REQUEST['token'];
+if(!$valt->validate('api_via', $token)) {
+	die($valt->getErrorMessage());
+}
 if(!intval($id)) {
 	die(t('Invalid Route ID'));
 }
