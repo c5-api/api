@@ -75,14 +75,25 @@ class ApiPackage extends Package {
      */
 	public function install() {
 		$pkg = parent::install();
+		
 		$vh = Loader::helper('validation/identifier');
 		$key = $vh->getString(24);
 		$pkg->saveConfig('key', $key);
+		
 		Loader::model('single_page');
+		
 		$p = SinglePage::add('/dashboard/api',$pkg);
 		$p->update(array('cName'=>t('concrete5 API'), 'cDescription'=>t('Remote management of your site.')));
 		$p2 = SinglePage::add('/dashboard/api/manage_routes',$pkg);
 		$p2->update(array('cName'=>t('Manage Routes'), 'cDescription'=>t('Managed installed API routes.')));
+		$p3 = SinglePage::add('/dashboard/api/settings',$pkg);
+		$p3->update(array('cName'=>t('Settings')));
+		$p4 = SinglePage::add('/dashboard/api/settings/core/',$pkg);
+		$p4->update(array('cName'=>t('Core API')));
+		$p5 = SinglePage::add('/dashboard/api/settings/core/on_off',$pkg);
+		$p5->update(array('cName'=>t('Enable & Disable the API')));
+		$pkg->saveConfig('ENABLED', 1);
+		
 	}
 
     /**

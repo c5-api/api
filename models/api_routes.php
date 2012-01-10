@@ -22,6 +22,11 @@ class ApiRequest {
 	 * @return void
 	 */
 	public function parseRequest() { //have routes added on_start and run this on_before_render?
+	
+		$pk = Package::getByHandle(C5_API_HANDLE);
+		if(!$pk->config('ENABLED')) {
+			return; //if we arn't enabled, kill it.
+		}
 		$req = Request::get();
 		$path = $req->getRequestPath();
 		$path = trim($path, '/');
