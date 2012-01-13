@@ -258,5 +258,15 @@ class ApiRegister extends Object {
 		}
 		return $pkg;
 	}
+	
+	public function refreshRoutes($pkg) {
+		self::removeByPackage($pkg);
+		$obj = Loader::package($pkg);
+		if(is_object($obj)) {
+			$obj->refreshRoutes();
+			return true;
+		}
+		return false;
+	}
 
 }

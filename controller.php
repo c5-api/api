@@ -92,6 +92,9 @@ class ApiPackage extends Package {
 		$p4->update(array('cName'=>t('Core API')));
 		$p5 = SinglePage::add('/dashboard/api/settings/core/on_off',$pkg);
 		$p5->update(array('cName'=>t('Enable & Disable the API')));
+		$p6 = SinglePage::add('/dashboard/api/settings/core/refresh',$pkg);
+		$p6->update(array('cName'=>t('Refresh Routes')));
+		
 		$pkg->saveConfig('ENABLED', 1);
 		
 	}
