@@ -37,6 +37,7 @@ $urls = Loader::helper('concrete/urls');
 echo '<div class="ccm-ui">';
 echo '<form id="request_type_form" method="post" action="'.$urls->getToolsURL('vias', C5_API_HANDLE).'">';
 echo '<input type="hidden" name="ID" value="'.$id.'"/>';
+echo '<input type="hidden" name="token" value="'.$valt->generate('api_via').'"/>';
 echo '<div id="stat"></div>';
 echo '<table>';
 foreach($via as $type) {
