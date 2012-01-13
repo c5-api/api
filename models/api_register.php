@@ -259,12 +259,20 @@ class ApiRegister extends Object {
 		return $pkg;
 	}
 	
+	/**
+	 * Drops all routes then re-installs them from the refreshRoutes method of the package controller.
+	 *
+	 * @param string $pkg Package Handle
+	 * @return bool
+	 */
 	public function refreshRoutes($pkg) {
-		self::removeByPackage($pkg);
 		$obj = Loader::package($pkg);
 		if(is_object($obj)) {
-			$obj->refreshRoutes();
-			return true;
+			if(is_callable(array($obj, 'refreshRoutes'))) {
+				self::removeByPackage($pkg);
+				$obj->refreshRoutes();
+				return true;
+			}
 		}
 		return false;
 	}
