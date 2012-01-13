@@ -3,6 +3,7 @@ Loader::model('api_register', C5_API_HANDLE);
 class DashboardApiSettingsCoreRefreshController extends DashboardBaseController {
 
 	public function view($message = null) {
+		$this->addFooterItem('<script type="text/javascript">$(".disabled").twipsy();</script>');
 		if($message) {
 			switch($message) {
 				case 'success':

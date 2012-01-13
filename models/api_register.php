@@ -258,6 +258,22 @@ class ApiRegister extends Object {
 		}
 		return $pkg;
 	}
+
+	/**
+	 * Checks that a package's routes can be refreshed.
+	 *
+	 * @param string $pkg Package Handle
+	 * @return bool
+	 */	
+	public static function canRefresh($pkg) {
+		$obj = Loader::package($pkg);
+		if(is_object($obj)) {
+			if(is_callable(array($obj, 'refreshRoutes'))) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/**
 	 * Drops all routes then re-installs them from the refreshRoutes method of the package controller.
@@ -266,13 +282,11 @@ class ApiRegister extends Object {
 	 * @return bool
 	 */
 	public function refreshRoutes($pkg) {
-		$obj = Loader::package($pkg);
-		if(is_object($obj)) {
-			if(is_callable(array($obj, 'refreshRoutes'))) {
-				self::removeByPackage($pkg);
-				$obj->refreshRoutes();
-				return true;
-			}
+		if(self::canRefresh($pkg)) {
+			self::removeByPackage($pkg);
+			$obj = Loader::package($pkg);
+			$obj->refreshRoutes();
+			return true;
 		}
 		return false;
 	}

@@ -11,10 +11,18 @@ echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Refr
 		$token = $this->controller->token->generate('ref_routes');
 		foreach($pkgs as $pkg) {
 			$pkg = Package::getByHandle($pkg);
+			$dis = '';
+			$class = 'btn info';
+			$href = $this->action('ref', $pkg->getPackageHandle(), $token);
+			if(!ApiRegister::canRefresh($pkg->getPackageHandle())) {
+				$dis = ' disabled="disabled" title="'.t('Unable to Refresh Routes.').'"';
+				$href = '#';
+				$class = 'btn info disabled';
+			}
 			echo '<tr>';
 				echo '<td>';
 					echo $pkg->getPackageName();
-				echo '</td><td style="width:20%"><a href="'.$this->action('ref', $pkg->getPackageHandle(), $token).'" class="btn info">'.t('Refresh').'</a></td>';
+				echo '</td><td style="width:20%"><a data-placement="above" href="'.$href.'" class="'.$class.'"'.$dis.'>'.t('Refresh').'</a></td>';
 			echo '</tr>';
 		}
 		?>
