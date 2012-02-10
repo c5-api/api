@@ -97,7 +97,7 @@ class ApiRequest {
 		$list = ApiRegister::getApiRouteList();
 		foreach($list as $api) {
 			//print_r($api);
-			if(!$api->isEnabled()) {
+			if(!$api->isEnabled()) {//should we return a 503 on these?
 				continue;
 			}
 			$ve = $api->getViaEnabled();
@@ -107,7 +107,7 @@ class ApiRequest {
 			}
 			$params = array();
 			if($api->getClass() && $api->getMethod()) {
-				$action = array('controller'=>$api->getClass(), 'action'=>$api->getMethod());//eg: User#listUsers
+				$action = array('controller' => $api->getClass(), 'action' => $api->getMethod());
 			} else {
 				$action = '';
 			}
