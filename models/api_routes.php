@@ -127,7 +127,13 @@ class ApiRequest {
 		//exit;
 		if ($req) {
 			Events::fire('on_api_found_route', $req);
-			extract($req);
+			//extract($req);
+			$tar = $req->getTarget();
+			$controller = $tar['controller'];
+			$action = $tar['action'];
+			$params = $req->getParameters();
+			$pkgHandle = $req->getPkg();
+
 			if(API_LOG_REQUEST_FOUND) {
 				$log = new ApiLog('request_found', C5_API_REQUESTED_ROUTE, 'api');
 				$log->write('==='.t('Package Handle').'===');
@@ -160,6 +166,7 @@ class ApiRequest {
 							$resp->send();
 						}
 					}
+
 					if(is_callable(array('Api'.$controller, $action))) {
 						$ret = call_user_func_array(array('Api'.$controller, $action), $params);
 					} else {

@@ -88,7 +88,7 @@ class ApiRouter {
             if(!in_array($requestMethod, $route->getMethods())) continue;
 
             // check if request url matches route regex. if not, return false.
-            if (!preg_match("@^".rtrim($route->getRegex(), '/')."*$@i", rtrim($requestUrl, '/'), $matches)) continue;
+            if (!preg_match("@^".$route->getRegex()."*$@i", $requestUrl, $matches)) continue;
 
             $params = array();
 
@@ -106,7 +106,9 @@ class ApiRouter {
             }
 			
 			$tar = $route->getTarget();
-            return array('pkgHandle' => $route->getPkg(), 'controller' => $tar['controller'], 'action' => $tar['action'], 'params' => $params);
+			$route->setParameters($params);
+			return $route;
+            //return array('pkgHandle' => $route->getPkg(), 'controller' => $tar['controller'], 'action' => $tar['action'], 'params' => $params);
             
         }
 
@@ -180,6 +182,12 @@ class ApiRoute {
 	*/
 	private $filters = array();
 
+    /**
+    * Array containing parameters passed through request URL
+    * @var array
+    */
+	private $params = array();
+
 	/**
 	* The package the route belongs to
 	* @var string
@@ -191,6 +199,11 @@ class ApiRoute {
 	}
 
 	public function setUrl($url) {
+		$url = (string) $url;
+
+		// make sure that the URL is suffixed with a forward slash
+		if(substr($url,-1) !== '/') $url .= '/';
+
 		$this->url = $url;
 	}
 
@@ -216,6 +229,14 @@ class ApiRoute {
 
 	public function setName($name) {
 		$this->name = (string) $name;
+	}
+
+	public function getParameters() {
+		return $this->parameters;
+	}
+
+	public function setParameters(array $parameters) {
+		$this->parameters = $parameters;
 	}
 
 	public function getPkg() {
