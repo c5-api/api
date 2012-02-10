@@ -1,5 +1,5 @@
 <?php defined('C5_EXECUTE') or die('Access Denied.');
-class DashboardApiSettingsCoreOnOffController extends DashboardBaseController {
+class DashboardApiCoreOnOffController extends DashboardBaseController {
 
 	public function view() {
 		$this->set('enable', Package::getByHandle('api')->config('ENABLED'));

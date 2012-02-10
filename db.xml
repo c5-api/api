@@ -27,4 +27,20 @@
     	<NOTNULL/>
     </field>
   </table>
+  <table name="ApiLogs">
+    <field name="ID" type="I" size="10">
+      <KEY/>
+      <AUTOINCREMENT/>
+      <UNSIGNED/>
+    </field>
+    <field name="pkgHandle" type="C" size="255"/>
+    <field name="timestamp" type="T">
+      <NOTNULL/>
+      <DEFTIMESTAMP/>
+    </field>
+    <field name="rtype" type="C" size="255"/>
+    <field name="route" type="X2"/>
+    <field name="data" type="X2"/>
+    <field name="time" type="F"/>
+  </table>
 </schema>

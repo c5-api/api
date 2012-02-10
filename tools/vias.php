@@ -1,6 +1,6 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 
-$c = Page::getByPath('/dashboard/api/manage_routes');
+$c = Page::getByPath('/dashboard/api/core/manage_routes');
 $cp = new Permissions($c);
 if(!$cp->canRead()) {
 	die(t('Access Denied'));
