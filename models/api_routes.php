@@ -21,14 +21,18 @@ class ApiRequest {
 	 *
 	 * @return void
 	 */
-	public function parseRequest() { //have routes added on_start and run this on_before_render?
-	
+	public function parseRequest() {
+
+		Loader::model('api_logs', C5_API_HANDLE);
+		//print_r(ApiLog::getLogsByTime());
+		//exit;
 		$pk = Package::getByHandle(C5_API_HANDLE);
 		if(!$pk->config('ENABLED')) {
 			return; //if we arn't enabled, kill it.
 		}
 		$req = Request::get();
 		$path = $req->getRequestPath();
+
 		$path = trim($path, '/');
 		$pathparts = explode('/', $path);
 		$pparts = count($pathparts);
@@ -55,12 +59,19 @@ class ApiRequest {
 			if($m != $p) {
 				return;
 			} else if($m == $p && $i == $mparts) {
+				if(API_LOG_REQUEST_RETURN) {
+					define('C5_API_LOG_TIME_START', microtime());
+				}
 				$self = new self();
 				$dirrel = strlen(DIR_REL.'/'.DISPATCHER_FILENAME);
 				if(substr($_SERVER['REQUEST_URI'], 0, $dirrel) == DIR_REL.'/'.DISPATCHER_FILENAME) { //pretty url hack
 					$path = DIR_REL.'/'.DISPATCHER_FILENAME.'/'.BASE_API_PATH;
 				} else {
 					$path = DIR_REL.'/'.BASE_API_PATH;
+				}
+				define('C5_API_REQUESTED_ROUTE', str_replace($path, '', $_SERVER['REQUEST_URI']));
+				if(API_LOG_REQUEST_PATH) {
+					ApiLog::addEntry($_SERVER['REQUEST_URI'], 'intitial_request', C5_API_REQUESTED_ROUTE, 'api');
 				}
 				$self->dispatch($path);
 			}
@@ -113,6 +124,20 @@ class ApiRequest {
 		if ($r->hasRoute()) {
 			Events::fire('on_api_found_route', $r->getRoute());
 			extract($r->getRoute());
+			if(API_LOG_REQUEST_FOUND) {
+				$log = new ApiLog('request_found', C5_API_REQUESTED_ROUTE, 'api');
+				$log->write('==='.t('Package Handle').'===');
+				$log->write($pkgHandle);
+				$log->write('==='.t('Controller').'===');
+				$log->write('Api'.$controller);
+				$log->write('==='.t('Action').'===');
+				$log->write($action);
+				$log->write('==='.t('Parameters').'===');
+				foreach($params as $key=>$val) {
+					$log->write($key.'=>'.$val);
+				}
+				$log->close();
+			}
 			$txt = Loader::helper('text');
 			Loader::model('api_controller', C5_API_HANDLE);
 			Loader::model('api/'.$txt->uncamelcase($controller), $pkgHandle);
@@ -131,8 +156,11 @@ class ApiRequest {
 							$resp->send();
 						}
 					}
-	
-					$ret = call_user_func_array(array('Api'.$controller, $action), $params);
+					if(is_callable(array('Api'.$controller, $action))) {
+						$ret = call_user_func_array(array('Api'.$controller, $action), $params);
+					} else {
+						throw new Exception('METHOD_NOT_CALLABLE');
+					}
 				} catch(Exception $e) {
 					throw new Exception($e->getMessage(), 500);
 				}
@@ -202,16 +230,6 @@ class ApiResponse {
 	 * @var string $format
 	 */
 	private $format = 'json';
-	
-	/**
-	 * @var bool $debug
-	 */
-	private $debug = true;//enables html responses
-	
-	/**
-	 * @var bool $logging
-	 */
-	private $logging = false;//does nothing so far, log requests and data returned?
 
 	/**
 	 * @var string $header
@@ -281,7 +299,7 @@ class ApiResponse {
 	public function handleException(Exception $e) {
 		//print_r($e);
 		$this->setData(array());
-		if($this->debug) {
+		if(C5_API_DEBUG) {
 			$this->setMessage($e->getMessage());
 		} else {
 			$this->setMessage('ERROR_INTERAL_ERROR');
@@ -298,6 +316,9 @@ class ApiResponse {
 	 * @return void
 	 */	
 	public function setFormat($data = 'json') {
+		if($data != 'html' && $data != 'xml') {
+			$data = 'json';
+		}
 		$this->format = $data;
 	}
 
@@ -357,11 +378,29 @@ class ApiResponse {
 	 *
 	 * @return void
 	 */	
-	public function send() {	
+	public function send() {
+		if(API_LOG_REQUEST_RETURN) {
+			Loader::model('api_logs', C5_API_HANDLE);
+			$log = new ApiLog('request_return', C5_API_REQUESTED_ROUTE, 'api', true, abs(microtime() - C5_API_LOG_TIME_START));
+			$log->write('==='.t('Error').'===');
+			if($this->error) { $this->error = 'true'; } else { $this->error = 'false';}
+			$log->write($this->error);
+			$log->write('==='.t('Message').'===');
+			$log->write($this->message);
+			$log->write('==='.t('Code').'===');
+			$log->write($this->code);
+			$log->write('==='.t('Format').'===');
+			$log->write($this->format);
+			$log->write('==='.t('Data').'===');
+			$log->write(print_r($this->data, true));
+			$log->close();
+		}
+		
+		
 		header("HTTP/1.1 ".$this->code." ".$this->header);
 		if($this->format == 'xml' && class_exists('XMLWriter')) {
 			echo $this->sendXml();
-		} else if($this->format == 'html' && $this->debug) {
+		} else if($this->format == 'html' && C5_API_DEBUG) {
 			echo $this->sendHtml();
 		} else {
 			echo $this->sendJson();
@@ -446,9 +485,14 @@ class ApiResponse {
 		$html .= '<hr>';
 		$html .= '<h2>%s</h2>';
 		$html .= '<pre>%s</pre>';
+		if(API_LOG_REQUEST_RETURN) {
+			$html .= '<hr>';
+			$html .= '<h2>%s</h2>';
+			$html .= '<code>%s</code>';
+		}
 		
 		$txt = Loader::helper('text');
-		$html = sprintf($html, t('Code:'), intval($this->code), t('Error:'), $this->error, t('Message'), $txt->entities($this->message), t('Data:'), $txt->entities(print_r($this->data, true)));
+		$html = sprintf($html, t('Code:'), intval($this->code), t('Error:'), $this->error, t('Message'), $txt->entities($this->message), t('Data:'), $txt->entities(print_r($this->data, true)), t('Request Time:'), abs(microtime() - C5_API_LOG_TIME_START));
 		return $html;
 		//return nl2br(print_r($this,true));//super debug O.o
 	

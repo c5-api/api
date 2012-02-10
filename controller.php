@@ -57,12 +57,25 @@ class ApiPackage extends Package {
      */
 	public function on_start() {
 		if(!defined('BASE_API_PATH')) {
-			define('BASE_API_PATH', '-/api');
+			define('BASE_API_PATH', '-/api'); // -/api
 		}
+		if(!defined('C5_API_DEBUG')) {
+			Config::getandDefine('C5_API_DEBUG', true);
+		}
+		if(!defined('API_LOG_REQUEST_PATH')) {
+			Config::getandDefine('API_LOG_REQUEST_PATH', true);
+		}
+		if(!defined('API_LOG_REQUEST_RETURN')) {
+			Config::getandDefine('API_LOG_REQUEST_RETURN', true);
+		}
+		if(!defined('API_LOG_REQUEST_FOUND')) {
+			Config::getandDefine('API_LOG_REQUEST_FOUND', true);
+		}
+		
 		define('C5_API_HANDLE', 'api');
 		Loader::model('api_routes', 'api');
 		//possibly on_start if we are using a db
-		Events::extend('on_before_render', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api_routes.php');
+		Events::extend('on_start', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api_routes.php');
 	}
 
     /**
@@ -84,16 +97,14 @@ class ApiPackage extends Package {
 		
 		$p = SinglePage::add('/dashboard/api',$pkg);
 		$p->update(array('cName'=>t('concrete5 API'), 'cDescription'=>t('Remote management of your site.')));
-		$p2 = SinglePage::add('/dashboard/api/manage_routes',$pkg);
+		$p1 = SinglePage::add('/dashboard/api/core/',$pkg);
+		$p1->update(array('cName'=>t('Core API')));
+		$p2 = SinglePage::add('/dashboard/api/core/manage_routes',$pkg);
 		$p2->update(array('cName'=>t('Manage Routes'), 'cDescription'=>t('Managed installed API routes.')));
-		$p3 = SinglePage::add('/dashboard/api/settings',$pkg);
-		$p3->update(array('cName'=>t('Settings')));
-		$p4 = SinglePage::add('/dashboard/api/settings/core/',$pkg);
-		$p4->update(array('cName'=>t('Core API')));
-		$p5 = SinglePage::add('/dashboard/api/settings/core/on_off',$pkg);
-		$p5->update(array('cName'=>t('Enable & Disable the API')));
-		$p6 = SinglePage::add('/dashboard/api/settings/core/refresh',$pkg);
-		$p6->update(array('cName'=>t('Refresh Routes')));
+		$p3 = SinglePage::add('/dashboard/api/core/on_off',$pkg);
+		$p3->update(array('cName'=>t('Enable & Disable the API')));
+		$p4 = SinglePage::add('/dashboard/api/core/refresh',$pkg);
+		$p4->update(array('cName'=>t('Refresh Routes')));
 		
 		$pkg->saveConfig('ENABLED', 1);
 		
