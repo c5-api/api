@@ -90,7 +90,8 @@ class ApiRequest {
 		} else {
 			$_SERVER['REQUEST_METHOD'] = API_REQUEST_METHOD;
 		}
-		$r = new ApiRouter($path);
+		$r = new ApiRouter();
+		$r->setBasePath($path);
 
 		Loader::model('api_register', C5_API_HANDLE);
 		$list = ApiRegister::getApiRouteList();
@@ -106,7 +107,7 @@ class ApiRequest {
 			}
 			$params = array();
 			if($api->getClass() && $api->getMethod()) {
-				$action = $api->getClass().'#'.$api->getMethod();//eg: User#listUsers
+				$action = array('controller'=>$api->getClass(), 'action'=>$api->getMethod());//eg: User#listUsers
 			} else {
 				$action = '';
 			}
@@ -117,13 +118,16 @@ class ApiRequest {
 				$params['via'] = implode(',', $api->getVia());
 			}
 			//var_dump('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
-			$r->match('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
+			$r->map('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
 		}
 		$resp = ApiResponse::getInstance();
 		$resp->setFormat($_REQUEST['format']);
-		if ($r->hasRoute()) {
-			Events::fire('on_api_found_route', $r->getRoute());
-			extract($r->getRoute());
+		$req = $r->matchCurrentRequest();
+		//var_dump($req);
+		//exit;
+		if ($req) {
+			Events::fire('on_api_found_route', $req);
+			extract($req);
 			if(API_LOG_REQUEST_FOUND) {
 				$log = new ApiLog('request_found', C5_API_REQUESTED_ROUTE, 'api');
 				$log->write('==='.t('Package Handle').'===');
@@ -143,7 +147,7 @@ class ApiRequest {
 			Loader::model('api/'.$txt->uncamelcase($controller), $pkgHandle);
 			try {
 				try {
-					$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test, should throw error and send to end execution
+					$auth = Events::fire('on_api_auth', $req); //custom auth possibly, need to test, should throw error and send to end execution
 					//comment the below line for auth
 					$auth = true;
 					if($auth === false) {

@@ -2,183 +2,118 @@
 
 /**
  * Routing class to match request URL's against given routes and map them to a controller action.
- *
- * @author Danny
- * @license MIT
  */
-final class ApiRouter {
+class ApiRouter {
+
+    /**
+    * Array that holds all Route objects
+    * @var array
+    */ 
+    private $routes = array();
 
     /**
      * Array to store named routes in, used for reverse routing.
      * @var array 
      */
-    private $named_routes = array();
-
-    /**
-     * Boolean whether a route has been matched.
-     * @var boolean
-     */
-    private $route_found = false;
-
-    /**
-     * The matched route. Contains an array with controller, action and optional parameter values.
-     * @var array 
-     */
-    private $route = array();
+    private $namedRoutes = array();
 
     /**
      * The base REQUEST_URI. Gets prepended to all route url's.
-     * 
      * @var string
      */
-    private $base_url = '';
-
-	/**
-	 * Arguments for the matched route
-	 *
-	 * @var array
-	 */
-	private $route_args = array();
-	
-    /**
-     * Creates an instance of the Router class
-     * @param string $base_url Base url to prepend to all route url's (optional)
-     */
-    public function __construct($base_url = '') {
-        $this->base_url = $base_url;
-    }
-
+    private $basePath = '';
+    
     /**
      * Set the base url - gets prepended to all route url's.
      * @param string $base_url 
      */
-    public function setBaseUrl($base_url) {
-        $this->base_url = $base_url;
+    public function setBasePath($basePath) {
+        $this->basePath = (string) $basePath;
     }
 
     /**
-     * Has a route been matched?
-     * @return boolean True if a route has been found, false if not. 
-     */
-    public function hasRoute() {
-        return $this->route_found;
-    }
+    * Route factory method
+    *
+    * Maps the given URL to the given target.
+    * @param string $routeUrl string
+    * @param mixed $target The target of this route. Can be anything. You'll have to provide your own method to turn *      this into a filename, controller / action pair, etc..
+    * @param array $args Array of optional arguments.
+    */
+    public function map($routeUrl, $pkg = C5_API_HANDLE, $target = '', array $args = array()) {
+        $route = new ApiRoute();
 
-    /**
-     * Get array with data of the matched route.
-     * @return array Array containing the controller, action and parameters of matched route. 
-     */
-    public function getRoute() {
-        return $this->route;
-    }
+        $route->setUrl($this->basePath . $routeUrl);
 
-    /**
-     * Match a route to the current REQUEST_URI. Returns true on succes (route matches), false on failure.
-     * 
-     * @param string $route_url The URL of the route to match, must start with a leading slash. Dynamic URL value's must start with a colon. 
-     * @param string $pkg The handle of the package (used for locating models)
-     * @param string $target The controller and action to map this route_url to, seperated by a hash (#). The action value defaults to 'index'. (optional)
-     * @param array $args Accepts two keys, 'via' and 'as'. 'via' accepts a comma seperated list of HTTP Methods for this route. 'as' accepts a string and will be used as the name of this route.
-     * @return boolean True if route matches URL, false if not.
-     */
-    public function match($route_url, $pkg = C5_API_HANDLE, $target = '', array $args = array()) {
+        $route->setTarget($target);
+        
+        $route->setPkg($pkg);
 
-        // check if this is a named route, if so, store it.
-        if (isset($args['as'])) {
-            $this->named_routes[$args['as']] = $route_url;
+        if(isset($args['methods'])) {
+            $methods = explode(',', $args['methods']);
+            $route->setMethods($methods);
         }
 
-        // check if a route has already been found
-        // if so, function doesn't have to run
-        if ($this->route_found)
-            return;
+        if(isset($args['filters'])) {
+            $route->setFilters($args['filters']);
+        }
 
-        // check for matching method
-        if (isset($args['via'])) {
+        if(isset($args['name'])) {
+            $route->setName($args['name']);
+            $this->namedRoutes[$route->getName()] = $route;
+        }
 
-            // all methods uppercase
-            $args['via'] = strtoupper($args['via']);
+        $this->routes[] = $route;
+    }
 
-            // explode by comma
-            $request_methods = explode(',', $args['via']);
+    /**
+    * Matches the current request against mapped routes
+    */
+    public function matchCurrentRequest() {
+        $requestMethod = (isset($_POST['_method']) && ($_method = strtoupper($_POST['_method'])) && in_array($_method,array('PUT','DELETE'))) ? $_method : $_SERVER['REQUEST_METHOD'];
 
-            // hack to simulate DELETE and PUT requests
-            if ((isset($_POST['_method']) && ($_method = strtoupper($_POST['_method'])) || isset($_GET['_method']) && $_method = strtoupper($_GET['_method'])) && in_array($_method, array('PUT', 'DELETE'))) {
-                $server_request_method = $_method;
-            } else {
-                $server_request_method = $_SERVER['REQUEST_METHOD'];
+        return $this->match($_SERVER['REQUEST_URI'], $requestMethod);
+    }
+
+    /**
+    * Match given request url and request method and see if a route has been defined for it
+    * If so, return route's target
+    * If called multiple times
+    */
+    public function match($requestUrl, $requestMethod = 'GET') {
+    	//print_r($this->routes);
+        foreach($this->routes as $route) {
+
+            // compare server request method with route's allowed http methods
+            if(!in_array($requestMethod, $route->getMethods())) continue;
+
+            // check if request url matches route regex. if not, return false.
+            if (!preg_match("@^".rtrim($route->getRegex(), '/')."*$@i", rtrim($requestUrl, '/'), $matches)) continue;
+
+            $params = array();
+
+            if (preg_match_all("/:(\w+)/", $route->getUrl(), $argument_keys)) {
+
+                // grab array with matches
+                $argument_keys = $argument_keys[1];
+
+                // loop trough parameter names, store matching value in $params array
+                foreach ($argument_keys as $key => $name) {
+                    if (isset($matches[$key + 1]))
+                        $params[$name] = $matches[$key + 1];
+                }
+
             }
-
-            // check if current request has the right method for this route. if not, return false.
-            if (!in_array($server_request_method, $request_methods))
-                return false;
+			
+			$tar = $route->getTarget();
+            return array('pkgHandle' => $route->getPkg(), 'controller' => $tar['controller'], 'action' => $tar['action'], 'params' => $params);
+            
         }
 
-
-        // check for matching URL
-        $request_url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    	$request_url = rtrim($request_url, '/');
-    	
-    	// store route filter arguments as instance variable so callback function can access them later on
-		$this->route_args = $args;
-
-        // setup route regex for route url
-       	$route_regex = preg_replace_callback("/:(\w+)/", array(&$this, 'setup_filter_regex'), $this->base_url . $route_url);
-
-        // check if request url matches route regex. if not, return false.
-        if (!preg_match("@^{$route_regex}*$@i", $request_url, $matches))
-            return false;
-
-
-        // setup parameters
-        $params = array();
-
-        // fill params array
-        if (preg_match_all("/:(\w+)/", $route_url, $param_keys)) {
-
-            // grab array with matches
-            $param_keys = $param_keys[1];
-
-            // loop trough parameter names, store matching value in $params array
-            foreach ($param_keys as $key => $name) {
-                if (isset($matches[$key + 1]))
-                    $params[$name] = $matches[$key + 1];
-            }
-        }
-
-        if ($target) {
-            // target explicitly given
-            $target = explode('#', $target);
-
-            if (!isset($params['controller']))
-                $params['controller'] = $target[0];
-            if (!isset($params['action']))
-                $params['action'] = (isset($target[1])) ? $target[1] : 'index';
-        } else {
-            // target not explicitly given
-            // extract from url
-            $target = explode('/', ltrim(str_replace($this->base_url, '', $request_url), '/'));
-
-            if (!isset($params['controller']))
-                $params['controller'] = $target[0];
-            if (!isset($params['action']))
-                $params['action'] = (isset($target[1])) ? $target[1] : 'index';
-        }
-
-
-        // If route had a :controller segment, use that segment as the target controller
-        $controller = $params['controller'];
-        unset($params['controller']);
-
-        // If route had a :action segment, use that segment as the target action
-        $action = $params['action'];
-        unset($params['action']);
-
-        $this->route_found = true;
-        $this->route = array('pkgHandle' => $pkg, 'controller' => $controller, 'action' => $action, 'params' => $params);
-        return true;
+        return false;
     }
 
+
+    
     /**
      * Reverse route a named route
      * 
@@ -186,15 +121,16 @@ final class ApiRouter {
      * @param array $params Optional array of parameters to use in URL
      * @return string The url to the route
      */
-    public function reverse($route_name, array $params = array()) {
+    public function generate($routeName, array $params = array()) {
         // Check if route exists
-        if (!isset($this->named_routes[$route_name]))
-            return false;
+        if (!isset($this->namedRoutes[$routeName]))
+            throw new Exception(t("No route with the name %s has been found.", $routeName));
 
-        $route_url = $this->named_routes[$route_name];
+        $route = $this->namedRoutes[$routeName];
+        $url = $route->getUrl();
 
         // replace route url with given parameters
-        if ($params && preg_match_all("/:(\w+)/", $route_url, $param_keys)) {
+        if ($params && preg_match_all("/:(\w+)/", $url, $param_keys)) {
 
             // grab array with matches
             $param_keys = $param_keys[1];
@@ -202,27 +138,107 @@ final class ApiRouter {
             // loop trough parameter names, store matching value in $params array
             foreach ($param_keys as $i => $key) {
                 if (isset($params[$key]))
-                    $route_url = preg_replace("/:(\w+)/", $params[$key], $route_url, 1);
+                    $url = preg_replace("/:(\w+)/", $params[$key], $url, 1);
             }
         }
 
-        return $route_url;
+        return $url;
     }
-    
-   /**
-     * Used as a callback in preg_replace_callback to substitute default regex with custom regex specified by the 'filter' argument.
-     * 
-     * @param array $matches
-     * @return string 
-     */
-    private function setup_filter_regex($matches) {
-        
-        // does match have filter regex set?
-        if (isset($this->route_args['filters']) && isset($matches[1]) && isset($this->route_args['filters'][$matches[1]])) {
-            return $this->route_args['filters'][$matches[1]];
+
+}
+
+class ApiRoute {
+	
+	/**
+	* URL of this Route
+	* @var string
+	*/
+	private $url;
+
+	/**
+	* Accepted HTTP methods for this route
+	* @var array
+	*/
+	private $methods = array('GET','POST','PUT','DELETE');
+
+	/**
+	* Target for this route, can be anything.
+	* @var mixed
+	*/
+	private $target;
+
+	/**
+	* The name of this route, used for reversed routing
+	* @var string
+	*/
+	private $name;
+
+	/**
+	* Custom parameter filters for this route
+	* @var array
+	*/
+	private $filters = array();
+
+	/**
+	* The package the route belongs to
+	* @var string
+	*/
+	private $pkg;
+	
+	public function getUrl() {
+		return $this->url;
+	}
+
+	public function setUrl($url) {
+		$this->url = $url;
+	}
+
+	public function getTarget() {
+		return $this->target;
+	}
+
+	public function setTarget($target) {
+		$this->target = $target;
+	}
+
+	public function getMethods() {
+		return $this->methods;
+	}
+
+	public function setMethods(array $methods) {
+		$this->methods = $methods;
+	}
+
+	public function getName() {
+		return $this->name;
+	}
+
+	public function setName($name) {
+		$this->name = (string) $name;
+	}
+
+	public function getPkg() {
+		return $this->pkg;
+	}
+	
+	public function setPkg($pkg) {
+		$this->pkg = $pkg;
+	}
+
+	public function setFilters(array $filters) {
+		$this->filters = $filters;
+	}
+
+	public function getRegex() {
+		return preg_replace_callback("/:(\w+)/", array(&$this, 'substituteFilter'), $this->url);
+	}
+
+	private function substituteFilter($matches) {
+		if (isset($matches[1]) && isset($this->filters[$matches[1]])) {
+            return $this->filters[$matches[1]];
         }
         
         return "(\w+)";
-    }
+	}
 
 }
