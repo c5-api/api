@@ -36,6 +36,7 @@ class ApiRouter {
     *
     * Maps the given URL to the given target.
     * @param string $routeUrl string
+    * @param string $pkg The handle of the package (used for locating models)
     * @param mixed $target The target of this route. Can be anything. You'll have to provide your own method to turn *      this into a filename, controller / action pair, etc..
     * @param array $args Array of optional arguments.
     */
