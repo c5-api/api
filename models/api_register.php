@@ -59,6 +59,8 @@ class ApiRegister extends Object {
 			$db = Loader::db();
 			$db->Execute('insert into ApiRouteRegistry (route, pkgHandle, routeName, aclass, method, via, afilter, enabled, viaEnabled) values (?,?,?,?,?,?,?,?,?)', array($api['route'], $api['pkgHandle'], $api['routeName'], $api['class'], $api['method'], serialize($api['via']), serialize($api['filters']), $api['enabled'], serialize($api['viaEnabled'])));
 			$ID = $db->Insert_ID();
+			Cache::delete('api', 'package_list');
+			Cache::delete('api', 'route_list');
 			Events::fire('on_api_add', self::getByID($ID));
 			return self::getByID($ID);
 		}
@@ -73,12 +75,17 @@ class ApiRegister extends Object {
 	 * @return void|ApiRegister
 	 */
 	public static function getByID($ID) {
+		$list = Cache::get('api', $ID);
+		if(is_object($list)) {
+			return $list;
+		}
 		$db = Loader::db();
 		$row = $db->GetRow("select * from ApiRouteRegistry where ID = ?", array($ID));
 		if ($row) {
 			$et = new self();
 			$et->setPropertiesFromArray($row);
 			unset($et->error);//wtf
+			Cache::set('api', $ID, $et);
 			return $et;
 		}
 	}
@@ -111,12 +118,16 @@ class ApiRegister extends Object {
 	public function setPackageHandle($data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET pkgHandle = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', 'package_list');
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 	
 	public function setRoute($data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET route = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', 'route_list');
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 
@@ -128,42 +139,49 @@ class ApiRegister extends Object {
 			$data = false;
 		}
 		$db->Execute('UPDATE ApiRouteRegistry SET enabled = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 	
 	public function setName($data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET routeName = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 	
 	public function setMethod($data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET method = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 	
 	public function setClass($data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET aclass = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 	
 	public function setFilters(array $data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET pkgHandle = ? WHERE ID = ?', array(serialize($data), $this->ID));
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 	
 	public function setVia(array $data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET via = ? WHERE ID = ?', array(strtolower(serialize($data)), $this->ID));
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 
 	public function setViaEnabled(array $data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET viaEnabled = ? WHERE ID = ?', array(strtolower(serialize($data)), $this->ID));
+		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
 
@@ -173,12 +191,17 @@ class ApiRegister extends Object {
 	 * @return array
 	 */
 	public static function getApiRouteList() {
+		$ca = Cache::get('api', 'route_list');
+		if(is_array($ca)) {
+			return $ca;
+		}
 		$db = Loader::db();
 		$apis = array();
 		$r = $db->Execute('select ID from ApiRouteRegistry order by ID asc');
 		while ($row = $r->FetchRow()) {
 			$apis[] = self::getByID($row['ID']);
 		}
+		Cache::set('api', 'route_list', $apis);
 		return $apis;
 	}
 
@@ -242,6 +265,9 @@ class ApiRegister extends Object {
 			return false;
 		}
 		$db->Execute('delete from ApiRouteRegistry where ID = ?', array($this->ID));
+		Cache::delete('api', 'package_list');
+		Cache::delete('api', 'route_list');
+		Cache::delete('api', $this->ID);
 	}
 	
 	/**
@@ -250,12 +276,17 @@ class ApiRegister extends Object {
 	 * @return array
 	 */	
 	public static function getPackageList() {
+		$list = Cache::get('api', 'package_list');
+		if(is_array($list)) {
+			return $list;
+		}
 		$db = Loader::db();
 		$r = $db->Execute('select distinct pkgHandle from ApiRouteRegistry where pkgHandle <> ? order by pkgHandle asc', array(C5_API_HANDLE));
 		$pkg = array();
 		while($row = $r->FetchRow()) {
 			$pkg[] = $row['pkgHandle'];
 		}
+		Cache::set('api', 'package_list', $pkg);
 		return $pkg;
 	}
 
@@ -286,6 +317,7 @@ class ApiRegister extends Object {
 			self::removeByPackage($pkg);
 			$obj = Loader::package($pkg);
 			$obj->refreshRoutes();
+			Cache::delete('api', 'package_list');
 			return true;
 		}
 		return false;
