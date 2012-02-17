@@ -119,6 +119,7 @@ class ApiRegister extends Object {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET pkgHandle = ? WHERE ID = ?', array($data, $this->ID));
 		Cache::delete('api', 'package_list');
+		Cache::delete('api', 'route_list');
 		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
@@ -139,6 +140,7 @@ class ApiRegister extends Object {
 			$data = false;
 		}
 		$db->Execute('UPDATE ApiRouteRegistry SET enabled = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', 'route_list');
 		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
@@ -146,6 +148,7 @@ class ApiRegister extends Object {
 	public function setName($data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET routeName = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', 'route_list');
 		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
@@ -153,6 +156,7 @@ class ApiRegister extends Object {
 	public function setMethod($data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET method = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', 'route_list');
 		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
@@ -160,6 +164,7 @@ class ApiRegister extends Object {
 	public function setClass($data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET aclass = ? WHERE ID = ?', array($data, $this->ID));
+		Cache::delete('api', 'route_list');
 		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
@@ -167,6 +172,7 @@ class ApiRegister extends Object {
 	public function setFilters(array $data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET pkgHandle = ? WHERE ID = ?', array(serialize($data), $this->ID));
+		Cache::delete('api', 'route_list');
 		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
@@ -174,6 +180,7 @@ class ApiRegister extends Object {
 	public function setVia(array $data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET via = ? WHERE ID = ?', array(strtolower(serialize($data)), $this->ID));
+		Cache::delete('api', 'route_list');
 		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
@@ -181,6 +188,7 @@ class ApiRegister extends Object {
 	public function setViaEnabled(array $data) {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiRouteRegistry SET viaEnabled = ? WHERE ID = ?', array(strtolower(serialize($data)), $this->ID));
+		Cache::delete('api', 'route_list');
 		Cache::delete('api', $this->ID);
 		return self::getByID($this->ID);
 	}
