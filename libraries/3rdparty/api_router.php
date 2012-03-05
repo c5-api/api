@@ -92,7 +92,7 @@ class ApiRouter {
 
             $params = array();
 
-            if (preg_match_all("/:(\w+)/", $route->getUrl(), $argument_keys)) {
+            if (preg_match_all("/:([\w-])/", $route->getUrl(), $argument_keys)) {
 
                 // grab array with matches
                 $argument_keys = $argument_keys[1];
@@ -257,10 +257,9 @@ class ApiRoute {
 
 	private function substituteFilter($matches) {
 		if (isset($matches[1]) && isset($this->filters[$matches[1]])) {
-            return $this->filters[$matches[1]];
-        }
-        
-        return "(\w+)";
+        		return $this->filters[$matches[1]];
+        	}
+        	return "(\w+)";
 	}
 
 }
