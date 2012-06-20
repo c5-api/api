@@ -21,7 +21,7 @@ class ApiRequest {
 	 *
 	 * @return void
 	 */
-	public function parseRequest() {
+	public static function parseRequest() {
 
 		Loader::model('api_logs', C5_API_HANDLE);
 		//print_r(ApiLog::getLogsByTime());
