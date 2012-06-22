@@ -28,53 +28,25 @@ class ApiRequest {
 		//exit;
 		$pk = Package::getByHandle(C5_API_HANDLE);
 		if(!$pk->config('ENABLED')) {
-			return; //if we arn't enabled, kill it.
+			return; //if we arn't enabled, kill it. should we render an api response instead?
 		}
 		$req = Request::get();
 		$path = $req->getRequestPath();
 
 		$path = trim($path, '/');
-		$pathparts = explode('/', $path);
-		$pparts = count($pathparts);
-		
-		$basepath = trim(BASE_API_PATH, '/');
-		$match = explode('/', $basepath);
-		$mparts = count($match);
 
-		$i = 0;
-		$p = $mparts;
-		
-		if($mparts != $pparts) {
-			$pathparts2 = array();
-			while($p > 0) {
-				$pathparts2[] = array_shift($pathparts);
-				$p--;
+		$basepath = trim(BASE_API_PATH, '/');
+
+		if (substr($path, 0, strlen($basepath)) == $basepath) {
+			$self = new self();
+			$dirrel = strlen(DIR_REL.'/'.DISPATCHER_FILENAME);
+			if(substr($_SERVER['REQUEST_URI'], 0, $dirrel) == DIR_REL.'/'.DISPATCHER_FILENAME) { //pretty url hack
+				$path = DIR_REL.'/'.DISPATCHER_FILENAME.'/'.BASE_API_PATH;
+			} else {
+				$path = DIR_REL.'/'.BASE_API_PATH;
 			}
-		} else {
-			$pathparts2 = $pathparts;
-		}
-		$combine = array_combine($match, $pathparts2);
-		foreach($combine as $m => $p) {
-			$i++;
-			if($m != $p) {
-				return;
-			} else if($m == $p && $i == $mparts) {
-				if(API_LOG_REQUEST_RETURN) {
-					define('C5_API_LOG_TIME_START', microtime());
-				}
-				$self = new self();
-				$dirrel = strlen(DIR_REL.'/'.DISPATCHER_FILENAME);
-				if(substr($_SERVER['REQUEST_URI'], 0, $dirrel) == DIR_REL.'/'.DISPATCHER_FILENAME) { //pretty url hack
-					$path = DIR_REL.'/'.DISPATCHER_FILENAME.'/'.BASE_API_PATH;
-				} else {
-					$path = DIR_REL.'/'.BASE_API_PATH;
-				}
-				define('C5_API_REQUESTED_ROUTE', str_replace($path, '', $_SERVER['REQUEST_URI']));
-				if(API_LOG_REQUEST_PATH) {
-					ApiLog::addEntry($_SERVER['REQUEST_URI'], 'intitial_request', C5_API_REQUESTED_ROUTE, 'api');
-				}
-				$self->dispatch($path);
-			}
+			define('C5_API_REQUESTED_ROUTE', trim(str_replace($path, '', $_SERVER['REQUEST_URI']), '/'));
+			$self->dispatch();
 		}
 	}
 
@@ -84,66 +56,50 @@ class ApiRequest {
 	 * @param string $path base path for the api url
 	 * @return void
 	 */	
-	public function dispatch($path = null) {
-		if(!defined('API_REQUEST_METHOD')) {
+	public function dispatch() {
+		if(!defined('API_REQUEST_METHOD')) { //this is more for testing than anything else. (I think)
 			define('API_REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
 		} else {
 			$_SERVER['REQUEST_METHOD'] = API_REQUEST_METHOD;
 		}
-		$r = new ApiRouter($path);
+
+		$r = new ApiRouter();
 
 		Loader::model('api_register', C5_API_HANDLE);
 		$list = ApiRegister::getApiRouteList();
 		foreach($list as $api) {
-			//print_r($api);
-			if(!$api->isEnabled()) {
-				continue;
-			}
-			$ve = $api->getViaEnabled();
 
-			if(!in_array(strtolower(API_REQUEST_METHOD), $ve)) {
+			if(!$api->getEnabled()) {
 				continue;
 			}
-			$params = array();
-			if($api->getClass() && $api->getMethod()) {
-				$action = $api->getClass().'#'.$api->getMethod();//eg: User#listUsers
-			} else {
-				$action = '';
-			}
-			if($api->getFilters()) {
-				$params['filters'] = $api->getFilters();
-			}
-			if($api->getVia()) {
-				$params['via'] = implode(',', $api->getVia());
-			}
-			//var_dump('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
-			$r->match('/'.$api->getRoute(), $api->getPackageHandle(), $action, $params);
+
+			$r->map($api);
 		}
 		$resp = ApiResponse::getInstance();
 		$resp->setFormat($_REQUEST['format']);
-		if ($r->hasRoute()) {
-			Events::fire('on_api_found_route', $r->getRoute());
-			extract($r->getRoute());
-			if(API_LOG_REQUEST_FOUND) {
-				$log = new ApiLog('request_found', C5_API_REQUESTED_ROUTE, 'api');
-				$log->write('==='.t('Package Handle').'===');
-				$log->write($pkgHandle);
-				$log->write('==='.t('Controller').'===');
-				$log->write('Api'.$controller);
-				$log->write('==='.t('Action').'===');
-				$log->write($action);
-				$log->write('==='.t('Parameters').'===');
-				foreach($params as $key=>$val) {
-					$log->write($key.'=>'.$val);
-				}
+		$match = $r->matchCurrentRequest();
+
+		if ($match) {
+			Events::fire('on_api_found_route', $match);
+			
+			$api_ID = $match->getID();
+			$api_pkgHandle = $match->getPackageHandle();
+			$api_name = $match->getName();
+			$api_class = $match->getClass();
+			$api_method = $match->getMethod();
+			$api_parameters = $match->getParameters();
+			
+			
+			/*if(API_LOG_REQUEST_FOUND) {
+				$log = new ApiLog('request_found', $match, C5_API_REQUESTED_ROUTE, 'api');
 				$log->close();
-			}
+			}*/
 			$txt = Loader::helper('text');
 			Loader::model('api_controller', C5_API_HANDLE);
-			Loader::model('api/'.$txt->uncamelcase($controller), $pkgHandle);
+			Loader::model('api/'.$txt->uncamelcase($api_class), $api_pkgHandle);
 			try {
 				try {
-					$auth = Events::fire('on_api_auth', $r->getRoute()); //custom auth possibly, need to test, should throw error and send to end execution
+					/*$auth = Events::fire('on_api_auth', $match); //custom auth possibly, need to test, should throw error and send to end execution
 					//comment the below line for auth
 					$auth = true;
 					if($auth === false) {
@@ -155,9 +111,9 @@ class ApiRequest {
 							$resp->setCode(401);
 							$resp->send();
 						}
-					}
-					if(is_callable(array('Api'.$controller, $action))) {
-						$ret = call_user_func_array(array('Api'.$controller, $action), $params);
+					}*/
+					if(is_callable(array('Api'.$api_class, $api_method))) {
+						$ret = call_user_func_array(array('Api'.$api_class, $api_method), $api_parameters);
 					} else {
 						throw new Exception('METHOD_NOT_CALLABLE');
 					}
@@ -177,17 +133,6 @@ class ApiRequest {
 				$resp->handleException($e);
 			}
 		}
-	}
-
-	/**
-	 * Checks if the key attached to the request is the same as in the database
-	 *
-	 * @param string $key Key
-	 * @return bool
-	 */	
-	public static function authorize($key = '') {
-		$pkg = Package::getByHandle(C5_API_HANDLE);
-		return $pkg->config('key') == $key;
 	}
 	
 }

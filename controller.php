@@ -62,15 +62,6 @@ class ApiPackage extends Package {
 		if(!defined('C5_API_DEBUG')) {
 			Config::getandDefine('C5_API_DEBUG', true);
 		}
-		if(!defined('API_LOG_REQUEST_PATH')) {
-			Config::getandDefine('API_LOG_REQUEST_PATH', true);
-		}
-		if(!defined('API_LOG_REQUEST_RETURN')) {
-			Config::getandDefine('API_LOG_REQUEST_RETURN', true);
-		}
-		if(!defined('API_LOG_REQUEST_FOUND')) {
-			Config::getandDefine('API_LOG_REQUEST_FOUND', true);
-		}
 		
 		define('C5_API_HANDLE', 'api');
 		Loader::model('api_routes', 'api');
@@ -89,9 +80,9 @@ class ApiPackage extends Package {
 	public function install() {
 		$pkg = parent::install();
 		
-		$vh = Loader::helper('validation/identifier');
+		/*$vh = Loader::helper('validation/identifier');
 		$key = $vh->getString(24);
-		$pkg->saveConfig('key', $key);
+		$pkg->saveConfig('key', $key);*/
 		
 		Loader::model('single_page');
 		
@@ -130,8 +121,8 @@ class ApiPackage extends Package {
 			}
 		}
 		$db = Loader::db();
-		$db_sql = 'DROP TABLE IF EXISTS ApiRouteRegistry';
-		$db->Execute($db_sql);
+		$sql = 'DROP TABLE IF EXISTS ApiRouteRegistry';
+		$db->Execute($sql);
 		$pkg = parent::uninstall();
 	}
 

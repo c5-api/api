@@ -12,19 +12,14 @@
     <field name="route" type="X2">
       <NOTNULL/>
     </field>
-    <field name="routeName" type="C" size="255">
+    <field name="name" type="C" size="255">
       <NOTNULL/>
     </field>
-    <field name="aclass" type="C" size="255"/>
+    <field name="class" type="C" size="255"/>
     <field name="method" type="C" size="255"/>
-    <field name="via" type="X2"/>
-    <field name="afilter" type="X2"/>
     <field name="enabled" type="I1" size="1">
       <NOTNULL/>
       <DEFAULT value="1"/>      
-    </field>
-    <field name="viaEnabled" type="X2">
-    	<NOTNULL/>
     </field>
   </table>
   <table name="ApiLogs">
