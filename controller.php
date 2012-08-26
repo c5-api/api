@@ -63,6 +63,7 @@ class ApiPackage extends Package {
 			Config::getandDefine('C5_API_DEBUG', true);
 		}
 
+		define('C5_API_DIRNAME_AUTH', 'api/auth');
 		define('C5_API_DIRNAME_FORMATS', 'api/formats');
 		define('C5_API_DIRNAME_ROUTES', 'api/routes');
 
@@ -86,10 +87,6 @@ class ApiPackage extends Package {
 	public function install() {
 		$pkg = parent::install();
 		
-		/*$vh = Loader::helper('validation/identifier');
-		$key = $vh->getString(24);
-		$pkg->saveConfig('key', $key);*/
-		
 		Loader::model('single_page');
 		
 		$p = SinglePage::add('/dashboard/api',$pkg);
@@ -104,6 +101,10 @@ class ApiPackage extends Package {
 		$p4->update(array('cName'=>t('Refresh Routes')));
 		
 		$pkg->saveConfig('ENABLED', 1);
+
+		$this->installRoutes();
+		$this->installFormats();
+		$this->installAuth();
 		
 	}
 
@@ -120,16 +121,33 @@ class ApiPackage extends Package {
 			$force = false;
 		}
 		if(!$force) {
-			Loader::model('api_register', 'api');
+			/*Loader::model('api_register', 'api');
 			$pkgs = ApiRegister::getPackageList();
 			if(count($pkgs) > 0) {
 				throw new Exception(t('Please uninstall all addons that register routes with the API, before uninstalling this addon.'));
-			}
+			}*/
 		}
 		$db = Loader::db();
 		$sql = 'DROP TABLE IF EXISTS ApiRouteRegistry';
 		$db->Execute($sql);
 		$pkg = parent::uninstall();
+	}
+
+	public function installRoutes() {
+		$pkg = Package::getByHandle(C5_API_HANDLE);
+		ApiRoute::add('bad_request', t('Bad Request'), $pkg, true, false, true);
+		ApiRoute::add('forbidden', t('Forbidden'), $pkg, true, false, true);
+		ApiRoute::add('server_error', t('Server Error'), $pkg, true, false, true);
+	}
+
+	public function installFormats() {
+		$pkg = Package::getByHandle(C5_API_HANDLE);
+		ApiFormatModel::add('json', $pkg);
+	}
+
+	public function installAuth() {
+		$pkg = Package::getByHandle(C5_API_HANDLE);
+		ApiAuthModel::add('key', $pkg);
 	}
 
 	public static function registerAutoload() {
@@ -143,9 +161,9 @@ class ApiPackage extends Package {
 
 		$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
 
-		$classes['BadRequestApiController'] = array('apiRoute', 'bad_request');
-		$classes['ForbiddenApiController'] = array('apiRoute', 'forbidden');
-		$classes['ServerErrorApiController'] = array('apiRoute', 'server_error');
+		$classes['BadRequestApiRouteController'] = array('apiRoute', 'bad_request');
+		$classes['ForbiddenApiRouteController'] = array('apiRoute', 'forbidden');
+		$classes['ServerErrorApiRouteController'] = array('apiRoute', 'server_error');
 
 		ApiLoader::registerAutoload($classes);
 

@@ -11,7 +11,7 @@
  * @license  See License.txt
  * @link     http://c5api.com
  */
-class ApiController {
+class ApiRouteController {
 
 	final private function setupRequestTask() {
 
@@ -37,7 +37,7 @@ class ApiController {
 			$r = new ReflectionMethod(get_class($this), $method);
 			$cl = $r->getDeclaringClass();
 			if (is_object($cl)) {
-				if ($cl->getName() != 'ApiController' && strpos($method, 'on_') !== 0 && strpos($method, '__') !== 0 && $r->isPublic()) {
+				if ($cl->getName() != 'ApiRouteController' && strpos($method, 'on_') !== 0 && strpos($method, '__') !== 0 && $r->isPublic()) {
 					$foundTask = true;
 				}
 			}
@@ -67,10 +67,10 @@ class ApiController {
 			}
 
 			$do400 = false;
-			if (get_class($this) != 'BadRequestApiController') { 
+			if (get_class($this) != 'BadRequestApiRouteController') { 
 				if (!is_callable(array($this, $this->task)) && count($this->parameters) > 0) {
 					$do400 = true;
-				} else if (is_callable(array($this, $this->task))  && (get_class($this) != 'ForbiddenApiController')) {
+				} else if (is_callable(array($this, $this->task))  && (get_class($this) != 'ForbiddenApiROuteController')) {
 					// we use reflection to see if the task itself, which now much exist, takes fewer arguments than 
 					// what is specified
 					$r = new ReflectionMethod(get_class($this), $this->task);

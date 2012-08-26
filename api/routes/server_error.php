@@ -1,6 +1,6 @@
 <?php defined('C5_EXECUTE') or die('Access Denied');
 
-class ServerErrorApiController extends ApiController {
+class ServerErrorApiRouteController extends ApiRouteController {
 	
 	public function run() {
 
