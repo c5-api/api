@@ -1,7 +1,7 @@
 <?php defined('C5_EXECUTE') or die('Access Denied.');
 $valt = Loader::helper('validation/token');
 $form = Loader::helper('form');
-echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Enable/Disable API'), false, 'span6 offset5');?>
+echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Enable/Disable API'), false, 'span6 offset3', false);?>
 
 <form method="post" action="<?php echo $this->action('save_api_enable'); ?>">
 	<div class="ccm-pane-body">	
@@ -21,5 +21,5 @@ echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Enab
 </form>
 	
 <?php
-echo Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper();
+echo Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper(false);
 ?>

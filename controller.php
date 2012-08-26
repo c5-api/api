@@ -62,11 +62,17 @@ class ApiPackage extends Package {
 		if(!defined('C5_API_DEBUG')) {
 			Config::getandDefine('C5_API_DEBUG', true);
 		}
+
+		define('C5_API_DIRNAME_FORMATS', 'api/formats');
+		define('C5_API_DIRNAME_ROUTES', 'api/routes');
+
+		define('C5_API_FILENAME_ROUTES_CONTROLLER', 'controller.php');
 		
 		define('C5_API_HANDLE', 'api');
-		Loader::model('api_routes', 'api');
-		//possibly on_start if we are using a db
-		Events::extend('on_start', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api_routes.php');
+
+		self::registerAutoload();
+
+		Events::extend('on_start', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api_request.php');
 	}
 
     /**
@@ -126,4 +132,43 @@ class ApiPackage extends Package {
 		$pkg = parent::uninstall();
 	}
 
+	public static function registerAutoload() {
+		$classes = array();
+		$classes['ApiRouter'] = array('model', 'api/router', C5_API_HANDLE);
+		$classes['ApiRoute'] = array('model', 'api/route', C5_API_HANDLE);
+		$classes['ApiController'] = array('model', 'api/controller', C5_API_HANDLE);
+		$classes['ApiResponse'] = array('model', 'api/response', C5_API_HANDLE);
+		$classes['ApiFormatModel'] = array('model', 'api/format/model', C5_API_HANDLE);
+		$classes['ApiFormatList'] = array('model', 'api/format/list', C5_API_HANDLE);
+
+		$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
+
+		$classes['BadRequestApiController'] = array('apiRoute', 'bad_request');
+		$classes['ForbiddenApiController'] = array('apiRoute', 'forbidden');
+		$classes['ServerErrorApiController'] = array('apiRoute', 'server_error');
+
+		ApiLoader::registerAutoload($classes);
+
+	}
+
+}
+
+class ApiLoader extends Loader {
+
+	public static function apiFormat($path, $pkg) {
+		$env = Environment::get();
+		require_once($env->getPath(C5_API_DIRNAME_FORMATS . '/' . $path . '.php', $pkg));
+	}
+
+	public static function apiRoute($route) {
+		if(!is_object($route)) {
+			$routee = ApiRouteList::getRouteByPath($route);
+			if(!$routee) {
+				throw new Exception(t('Invalid route: %s', $route));
+			}
+			$route = $routee;
+		}
+		$env = Environment::get();
+		require_once($env->getPath($route->file, Package::getByID($route->pkgID)));
+	}
 }

@@ -6,7 +6,7 @@
       <AUTOINCREMENT/>
       <UNSIGNED/>
     </field>
-    <field name="pkgHandle" type="C" size="255">
+    <field name="pkgID" type="I" size="10">
       <NOTNULL/>
     </field>
     <field name="route" type="X2">
@@ -15,8 +15,17 @@
     <field name="name" type="C" size="255">
       <NOTNULL/>
     </field>
-    <field name="class" type="C" size="255"/>
-    <field name="method" type="C" size="255"/>
+    <field name="file" type="C" size="255">
+      <NOTNULL/>
+    </field>
+    <field name="internal" type="I1" size="1">
+      <NOTNULL/>
+      <DEFAULT value="0"/>      
+    </field>
+    <field name="auth" type="I1" size="1">
+      <NOTNULL/>
+      <DEFAULT value="1"/>      
+    </field>
     <field name="enabled" type="I1" size="1">
       <NOTNULL/>
       <DEFAULT value="1"/>      
@@ -37,5 +46,22 @@
     <field name="route" type="X2"/>
     <field name="data" type="X2"/>
     <field name="time" type="F"/>
+  </table>
+  <table name="ApiFormats">
+    <field name="fID" type="I" size="10">
+      <KEY/>
+      <AUTOINCREMENT/>
+      <UNSIGNED/>
+    </field>
+    <field name="pkgID" type="I" size="10">
+      <NOTNULL/>
+    </field>
+    <field name="handle" type="X2">
+      <NOTNULL/>
+    </field>
+    <field name="enabled" type="I1" size="1">
+      <NOTNULL/>
+      <DEFAULT value="1"/>      
+    </field>
   </table>
 </schema>

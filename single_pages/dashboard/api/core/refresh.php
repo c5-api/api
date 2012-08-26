@@ -1,6 +1,6 @@
 <?php defined('C5_EXECUTE') or die('Access Denied.');
 $form = Loader::helper('form');
-echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Refresh Routes'), false, 'span6 offset5');?>
+echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Refresh Routes'), false, 'span6 offset3');?>
 	<p><span class="label warning"><?php echo t('Warning')?></span><br/><?php echo t('Refreshing Routes will remove all settings associated with the route.')?></p>
 	<table class="zebra-striped">
 		<tr>

@@ -1,6 +1,6 @@
 <?php defined('C5_EXECUTE') or die('Access Denied.');
 	$valt = Loader::helper('validation/token');
-	echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Manage Routes'), t('This area allows you to enable or disable remote access to API routes and modify the allowed request methods for each route.'), 'span10 offset3');
+	echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Manage Routes'), t('This area allows you to enable or disable remote access to API routes and modify the allowed request methods for each route.'), 'span10 offset1');
 ?>
 	<h3><?php echo t('Installed Routes'); ?></h3>
 
