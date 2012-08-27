@@ -85,6 +85,7 @@ class ApiPackage extends Package {
      * @return void
      */
 	public function install() {
+		$this->on_start();
 		$pkg = parent::install();
 		
 		Loader::model('single_page');

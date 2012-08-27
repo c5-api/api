@@ -5,12 +5,12 @@ class ApiRoute extends ADOdb_Active_Record {
 	public $_table = 'ApiRouteRegistry';
 
 	public function __construct() {
-		parent::__construct('ApiRouteRegistry', array('ID'))
+		parent::__construct('ApiRouteRegistry', array('ID'));
 	}
 
 	public static function getByID($ID) {
 		$route = new ApiRoute();
-		$route->Load('ID = ?', array($ID))
+		$route->Load('ID = ?', array($ID));
 		return $route;
 	}
 
