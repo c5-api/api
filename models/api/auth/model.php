@@ -5,18 +5,18 @@ class ApiAuthModel extends ADOdb_Active_Record {
 	public $_table = 'ApiAuth';
 
 	public function __construct() {
-		parent::__construct('ApiAuth', array('aID'))
+		parent::__construct('ApiAuth', array('aID'));
 	}
 
 	public static function getByID($ID) {
 		$route = new ApiAuth();
-		$route->Load('aID = ?', array($ID))
+		$route->Load('aID = ?', array($ID));
 		return $route;
 	}
 
 	public static function getByHandle($ID) {
 		$route = new ApiAuth();
-		$route->Load('handle = ?', array($ID))
+		$route->Load('handle = ?', array($ID));
 		return $route;
 	}
 

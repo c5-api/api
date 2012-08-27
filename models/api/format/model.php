@@ -5,7 +5,7 @@ class ApiFormatModel extends ADOdb_Active_Record {
 	public $_table = 'ApiFormats';
 
 	public function __construct() {
-		parent::__construct('ApiFormats', array('fID'))
+		parent::__construct('ApiFormats', array('fID'));
 	}
 	
 	public function setHeaders() {
@@ -14,13 +14,13 @@ class ApiFormatModel extends ADOdb_Active_Record {
 
 	public static function getByID($ID) {
 		$route = new ApiFormatModel();
-		$route->Load('fID = ?', array($ID))
+		$route->Load('fID = ?', array($ID));
 		return $route;
 	}
 
 	public static function getByHandle($ID) {
 		$route = new ApiFormatModel();
-		$route->Load('handle = ?', array($ID))
+		$route->Load('handle = ?', array($ID));
 		return $route;
 	}
 
