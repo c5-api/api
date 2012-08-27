@@ -11,7 +11,7 @@ class ApiRouter {
 		$self->parseRequest();
 	}
 
-	public static funtion get() {
+	public static function get() {
 		static $req;
 		if (!isset($req)) {
 			$req = new ApiRouter();

@@ -73,7 +73,7 @@ class ApiPackage extends Package {
 
 		self::registerAutoload();
 
-		Events::extend('on_start', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api_request.php');
+		Events::extend('on_start', 'ApiRequest', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api/router.php');
 	}
 
     /**
