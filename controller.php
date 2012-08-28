@@ -159,7 +159,7 @@ class ApiPackage extends Package {
 		$classes = array();
 		$classes['ApiRouter'] = array('model', 'api/router', C5_API_HANDLE);
 		$classes['ApiRoute,ApiRouteList'] = array('model', 'api/route', C5_API_HANDLE);
-		$classes['ApiController'] = array('model', 'api/controller', C5_API_HANDLE);
+		$classes['ApiRouteController'] = array('model', 'api/controller', C5_API_HANDLE);
 		$classes['ApiResponse'] = array('model', 'api/response', C5_API_HANDLE);
 		$classes['ApiFormatModel'] = array('model', 'api/format/model', C5_API_HANDLE);
 		$classes['ApiFormatList'] = array('model', 'api/format/list', C5_API_HANDLE);
@@ -194,6 +194,6 @@ class ApiLoader extends Loader {
 			$route = $routee;
 		}
 		$env = Environment::get();
-		require_once($env->getPath($route->file, Package::getByID($route->pkgID)));
+		require_once($env->getPath(C5_API_DIRNAME_ROUTES.'/'.$route->file, Package::getByID($route->pkgID)));
 	}
 }
