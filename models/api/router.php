@@ -6,15 +6,16 @@ class ApiRouter {
 
 	public $requestedRoute;
 
-	public function __construct() {
+	/*public function __construct() {
 		$self = self::get();
 		$self->parseRequest();
-	}
+	}*/
 
 	public static function get() {
 		static $req;
 		if (!isset($req)) {
 			$req = new ApiRouter();
+			$req->parseRequest();
 		}
 		return $req;
 	}
@@ -40,11 +41,11 @@ class ApiRouter {
 				$path = DIR_REL.'/'.BASE_API_PATH;
 			}
 			//This is a path like /derp/thing/ha?params=1
-			$this->requestedPath =  trim(str_replace($path, '', $_SERVER['REQUEST_URI']), '/ %20'));
+			$this->requestedPath =  trim(str_replace($path, '', $_SERVER['REQUEST_URI']), '/');
 
 			$request = $this->requestedPath;
 			if(($pos = strpos($request, '?')) !== false) {
-            	$request =  trim(substr($request, 0, $pos), array('/', ' ', '%20'));
+            	$request =  trim(substr($request, 0, $pos), '/');
         	}
         	$this->requestedRoute = $request;
 			$this->dispatch();
@@ -55,13 +56,14 @@ class ApiRouter {
 		$txt = Loader::helper('text');
 		$error = false;
 		$route = ApiRouteList::getRouteByPath($this->requestedRoute);
-		if(is_object($route) && !$route->internal) { //valid route
+		if(is_object($route)/* && !$route->internal*/) { //valid route
 			$class = $txt->camelcase($route->route);
 			try {
 				require_once($route->file);
 				if(class_exists($class)) {
 					$cl = new $class;
 					$cl->setupAndRun();
+					exit;
 				}
 			} catch(Exception $e) {
 				$error = 500;

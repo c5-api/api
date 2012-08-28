@@ -22,12 +22,12 @@ class ApiPackage extends Package {
 	/**
 	 * @var string Minimum version of concrete5 required
 	 */
-	protected $appVersionRequired = '5.5.0';
+	protected $appVersionRequired = '5.6.0';
 
 	/**
 	 * @var string Version of the package
 	 */
-	protected $pkgVersion = '1.0';
+	protected $pkgVersion = '0.9';
 
     /**
      * Returns the package name
@@ -73,7 +73,7 @@ class ApiPackage extends Package {
 
 		self::registerAutoload();
 
-		Events::extend('on_start', 'ApiRouter', 'parseRequest', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api/router.php');
+		Events::extend('on_start', 'ApiRouter', 'get', DIR_PACKAGES.'/'.$this->pkgHandle.'/'.DIRNAME_MODELS.'/api/router.php');
 	}
 
     /**
@@ -158,7 +158,7 @@ class ApiPackage extends Package {
 	public static function registerAutoload() {
 		$classes = array();
 		$classes['ApiRouter'] = array('model', 'api/router', C5_API_HANDLE);
-		$classes['ApiRoute'] = array('model', 'api/route', C5_API_HANDLE);
+		$classes['ApiRoute,ApiRouteList'] = array('model', 'api/route', C5_API_HANDLE);
 		$classes['ApiController'] = array('model', 'api/controller', C5_API_HANDLE);
 		$classes['ApiResponse'] = array('model', 'api/response', C5_API_HANDLE);
 		$classes['ApiFormatModel'] = array('model', 'api/format/model', C5_API_HANDLE);

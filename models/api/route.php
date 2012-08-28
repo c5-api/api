@@ -92,7 +92,7 @@ class ApiRouteList {
 		}
 		$list = array();
 		$db = Loader::db();
-		$r = $db->Execute('SELECT ID FROM ApiRouteRegistry where pkgID = ?', array($pkg));
+		$r = $db->Execute('SELECT ID FROM ApiRouteRegistry where pkgID = ? and internal = 0', array($pkg));
 		while ($row = $r->FetchRow()) {
 			$list[] = ApiRoute::getByID($row['ID']);
 		}
@@ -112,7 +112,7 @@ class ApiRouteList {
 			$path = substr($path, 0, strrpos($path, '/'));
 		}
 		if($rt) {
-			return ApiRoute::geyByID($rt);
+			return ApiRoute::getByID($rt);
 		}
 		return false;//not found
 	}
