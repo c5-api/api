@@ -15,7 +15,7 @@ class ApiRoute extends ADOdb_Active_Record {
 	}
 
 	public static function add($route, $name, $pkg, $enabled = true, $auth = true, $internal = false) {
-		$route = trim($route, array('/'));
+		$route = trim($route, '/');
 		if(is_string($pkg)) {
 			$pkg = Package::getByHandle($pkg);
 		}

@@ -40,7 +40,7 @@ class ApiRouter {
 				$path = DIR_REL.'/'.BASE_API_PATH;
 			}
 			//This is a path like /derp/thing/ha?params=1
-			$this->requestedPath =  trim(str_replace($path, '', $_SERVER['REQUEST_URI']), array('/', ' ', '%20'));
+			$this->requestedPath =  trim(str_replace($path, '', $_SERVER['REQUEST_URI']), '/ %20'));
 
 			$request = $this->requestedPath;
 			if(($pos = strpos($request, '?')) !== false) {

@@ -129,10 +129,10 @@ class ApiPackage extends Package {
 			}*/
 		}
 		$db = Loader::db();
-		$sql = 'DROP TABLE IF EXISTS ApiRouteRegistry';
+		$sql1 = 'DROP TABLE IF EXISTS ApiRouteRegistry';
 		$sql2 = 'DROP TABLE IF EXISTS ApiFormats';
 		$sql3 = 'DROP TABLE IF EXISTS ApiAuth';
-		$db->Execute($sql);
+		$db->Execute($sql1);
 		$db->Execute($sql2);
 		$db->Execute($sql3);
 		$pkg = parent::uninstall();
