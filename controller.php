@@ -180,6 +180,33 @@ class ApiPackage extends Package {
 
 class ApiLoader extends Loader {
 
+	static $ApiClasses = array();
+
+	public static function autoload($class) {
+		$classes = self::$ApiClasses;
+		$cl = $classes[$class];
+		if ($cl) {
+			if(is_callable(array('ApiLoader', $cl[0]))) {
+				call_user_func_array(array('ApiLoader', $cl[0]), array($cl[1], $cl[2]));
+			}
+		} else {
+			parent::autoload($class);
+		}
+	}
+
+	public static function registerAutoload($classes) {
+		foreach($classes as $class => $data) {	
+			if (strpos($class, ',') > -1) {
+				$subclasses = explode(',', $class);
+				foreach($subclasses as $subclass) {
+					self::$ApiClasses[$subclass] = $data;
+				}
+			} else {
+				self::$ApiClasses[$class] = $data;
+			}
+		}				
+	}
+
 	public static function apiFormat($path, $pkg) {
 		$env = Environment::get();
 		require_once($env->getPath(C5_API_DIRNAME_FORMATS . '/' . $path . '.php', $pkg));
