@@ -25,7 +25,7 @@ class ApiRoute extends ADOdb_Active_Record {
 			return false;
 		}
 		$rt->route = $route;
-		$file = self::getApiPath($route);
+		$file = self::getApiPath($route, $pkg);
 		if(!$file) {
 			return false;
 		}
@@ -45,20 +45,22 @@ class ApiRoute extends ADOdb_Active_Record {
 	private static function routeExists($route) {
 		$rt = new ApiRoute();
 		$rt->load('route = ?', array($route));
-		if($rt) {
+		if($rt->ID) {
 			return true;
 		}
 	}
 
-	private static function getApiPath($route) {
-		$pkgHandle = Package::getByID($route->pkgID)->getPackageHandle();
+	private static function getApiPath($route, $pkg) {
+		$pkgHandle = $pkg->getPackageHandle();
 		$env = Environment::get();
-		$path = $env->getPath(C5_API_DIRNAME_ROUTES.'/'.$route->route, $pkgHandle); ///derp/thing.php
-		$path2 = $env->getPath(C5_API_DIRNAME_ROUTES.'/'.$route->route.'/'.C5_API_FILENAME_ROUTES_CONTROLLER, $pkgHandle);///derp/thing/controller.php
-		if (file_exists($path)) {
-			return $path;
+		$p1 = $route.'.php';
+		$p2 = $route.'/'.C5_API_FILENAME_ROUTES_CONTROLLER;
+		$path1 = $env->getPath(C5_API_DIRNAME_ROUTES.'/'.$p1, $pkgHandle); ///derp/thing.php
+		$path2 = $env->getPath(C5_API_DIRNAME_ROUTES.'/'.$p2, $pkgHandle);///derp/thing/controller.php
+		if (file_exists($path1)) {
+			return $p1;
 		} else if(file_exists($path2)) {
-			return $path2;
+			return $p2;
 		} else {
 			return false;
 		}

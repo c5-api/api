@@ -130,7 +130,11 @@ class ApiPackage extends Package {
 		}
 		$db = Loader::db();
 		$sql = 'DROP TABLE IF EXISTS ApiRouteRegistry';
+		$sql2 = 'DROP TABLE IF EXISTS ApiFormats';
+		$sql3 = 'DROP TABLE IF EXISTS ApiAuth';
 		$db->Execute($sql);
+		$db->Execute($sql2);
+		$db->Execute($sql3);
 		$pkg = parent::uninstall();
 	}
 
@@ -159,6 +163,7 @@ class ApiPackage extends Package {
 		$classes['ApiResponse'] = array('model', 'api/response', C5_API_HANDLE);
 		$classes['ApiFormatModel'] = array('model', 'api/format/model', C5_API_HANDLE);
 		$classes['ApiFormatList'] = array('model', 'api/format/list', C5_API_HANDLE);
+		$classes['ApiAuthModel'] = array('model', 'api/auth/model', C5_API_HANDLE);
 
 		$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
 

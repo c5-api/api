@@ -9,13 +9,13 @@ class ApiAuthModel extends ADOdb_Active_Record {
 	}
 
 	public static function getByID($ID) {
-		$route = new ApiAuth();
+		$route = new ApiAuthModel();
 		$route->Load('aID = ?', array($ID));
 		return $route;
 	}
 
 	public static function getByHandle($ID) {
-		$route = new ApiAuth();
+		$route = new ApiAuthModel();
 		$route->Load('handle = ?', array($ID));
 		return $route;
 	}
@@ -24,7 +24,7 @@ class ApiAuthModel extends ADOdb_Active_Record {
 		if(is_string($pkg)) {
 			$pkg = Package::getByHandle($pkg);
 		}
-		$rt = new ApiAuth();
+		$rt = new ApiAuthModel();
 		$rt->pkgID = $pkg->getPackageID();
 		$rt->handle = $handle;
 		$rt->enabled = $enabled;
