@@ -172,6 +172,7 @@ class ApiPackage extends Package {
 		$classes['ServerErrorApiRouteController'] = array('apiRoute', 'server_error');
 
 		ApiLoader::registerAutoload($classes);
+		spl_autoload_register(array('ApiLoader', 'autoload'));
 
 	}
 
