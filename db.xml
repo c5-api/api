@@ -63,6 +63,10 @@
       <NOTNULL/>
       <DEFAULT value="1"/>      
     </field>
+    <field name="isDefault" type="I1" size="1">
+      <NOTNULL/>
+      <DEFAULT value="0"/>      
+    </field>
   </table>
   <table name="ApiAuth">
     <field name="aID" type="I" size="10">

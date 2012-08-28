@@ -73,13 +73,13 @@ class ApiRouter {
 
 		if($error) {
 			switch($error) {
-				case "500":
+				case 500:
 					$route = ApiRouteList::getRouteByPath('server_error');
 					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;
 					$cl->setupAndRun();
 					break;
-				case "400":
+				case 400:
 					$route = ApiRouteList::getRouteByPath('bad_request');
 					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;

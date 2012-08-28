@@ -3,7 +3,7 @@
 class BadRequestApiRouteController extends ApiRouteController {
 	
 	public function run() {
-
+		die('testing');
 	}
 
 }

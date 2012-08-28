@@ -32,8 +32,15 @@ class ApiFormatModel extends ADOdb_Active_Record {
 		$rt->pkgID = $pkg->getPackageID();
 		$rt->handle = $handle;
 		$rt->enabled = $enabled;
+		$rt->isDefault = 0;
 		$rt->save();
 		return $rt;
+	}
+
+	public function setDefault() {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiFormats SET isDefault = 0');
+		$db->Execute('UPDATE ApiFormats SET isDefault = 1 WHERE fID = ?', array($this->fID));
 	}
 
 	public function disable() {
@@ -44,5 +51,31 @@ class ApiFormatModel extends ADOdb_Active_Record {
 	public function enable() {
 		$this->enabled = 1;
 		$this->save();
+	}
+
+	public static function getEnabled() {
+		$db = Loader::db();
+		$r = $db->Execute('SELECT fID FROM ApiFormats WHERE enabled = 1');
+		$ar = array();
+		while($row = $r->fetchRow()) {
+			$ar[] = self::getByID($row['fID']);
+		}
+		return $ar;
+	}
+
+	public static function getHandles() {
+		$db = Loader::db();
+		$r = $db->Execute('SELECT handle FROM ApiFormats WHERE enabled = 1');
+		$ar = array();
+		while($row = $r->fetchRow()) {
+			$ar[] = $row['handle'];
+		}
+		return $ar;
+	}
+
+	public static function getDefault() {
+		$db = Loader::db();
+		$row = $db->getOne('SELECT fID FROM ApiFormats WHERE isDefault = 1');
+		return self::getByID($row['fID']);
 	}
 }

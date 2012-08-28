@@ -70,7 +70,7 @@ class ApiRouteController {
 			if (get_class($this) != 'BadRequestApiRouteController') { 
 				if (!is_callable(array($this, $this->task)) && count($this->parameters) > 0) {
 					$do400 = true;
-				} else if (is_callable(array($this, $this->task))  && (get_class($this) != 'ForbiddenApiROuteController')) {
+				} else if (is_callable(array($this, $this->task))  && (get_class($this) != 'ForbiddenApiRouteController')) {
 					// we use reflection to see if the task itself, which now much exist, takes fewer arguments than 
 					// what is specified
 					$r = new ReflectionMethod(get_class($this), $this->task);
@@ -95,7 +95,10 @@ class ApiRouteController {
 			}
 
 			if ($do400) {
-				//@TODO
+				$route = ApiRouteList::getRouteByPath('bad_request');
+				$class = $txt->camelcase($route->route).'ApiRouteController';
+				$cl = new $class;
+				$cl->setupAndRun();
 				
 			}
  		}
@@ -144,7 +147,7 @@ class ApiRouteController {
 	}
 
 	final public function respond($data) {
-
+		
 	}
 
 }
