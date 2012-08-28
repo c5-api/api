@@ -6,11 +6,6 @@ class ApiRouter {
 
 	public $requestedRoute;
 
-	/*public function __construct() {
-		$self = self::get();
-		$self->parseRequest();
-	}*/
-
 	public static function get() {
 		static $req;
 		if (!isset($req)) {
@@ -56,10 +51,13 @@ class ApiRouter {
 		$txt = Loader::helper('text');
 		$error = false;
 		$route = ApiRouteList::getRouteByPath($this->requestedRoute);
-		if(is_object($route)/* && !$route->internal*/) { //valid route
-			$class = $txt->camelcase($route->route);
+		if(is_object($route) && $route->ID && !$route->internal) { //valid route
+			$class = $txt->camelcase($route->route).'ApiRouteController';
 			try {
-				require_once($route->file);
+				$env = Environment::get();
+				$pkg = Package::getByID($route->pkgID);
+				$path = $env->getPath(C5_API_DIRNAME_ROUTES.'/'.$route->file, $pkg);
+				require_once($path);
 				if(class_exists($class)) {
 					$cl = new $class;
 					$cl->setupAndRun();
@@ -77,15 +75,13 @@ class ApiRouter {
 			switch($error) {
 				case "500":
 					$route = ApiRouteList::getRouteByPath('server_error');
-					$class = $txt->camelcase($route->route);
-					require_once($route->file);
+					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;
 					$cl->setupAndRun();
 					break;
 				case "400":
 					$route = ApiRouteList::getRouteByPath('bad_request');
-					$class = $txt->camelcase($route->route);
-					require_once($route->file);
+					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;
 					$cl->setupAndRun();
 					break;

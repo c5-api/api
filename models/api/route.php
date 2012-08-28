@@ -106,7 +106,7 @@ class ApiRouteList {
 		while ((!$ID) && $path) {
 			$ID = $db->GetOne('SELECT ID from ApiRouteRegistry where route = ?', $path);
 			if($ID) {
-				$rt = $path;
+				$rt = $ID;
 				break;
 			}
 			$path = substr($path, 0, strrpos($path, '/'));
