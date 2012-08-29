@@ -99,6 +99,13 @@ class ApiRouteList {
 		return $list;
 	}
 
+	public static function removeByPackage($pkg) {
+		$list = self::getListByPackage($pkg);
+		foreach($list as $route) {
+			$route->delete();
+		}
+	}
+
 	public static function getRouteByPath($path) {
 		$db = Loader::db();
 		$ID = false;
