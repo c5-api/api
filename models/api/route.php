@@ -116,4 +116,15 @@ class ApiRouteList {
 		}
 		return false;//not found
 	}
+
+	public static function getPackagesList() {
+		$db = Loader::db();
+		$pk = Package::getByHandle(C5_API_HANDLE);
+		$r = $db->Execute('SELECT distinct pkgID FROM ApiRouteRegistry WHERE pkgID != ?', array($pk->getPackageID()));
+		$ar = array();
+		while ($row = $r->fetchRow()) {
+			$ar[] = Package::getByID($row['pkgID']);
+		}
+		return $ar;
+	}
 }

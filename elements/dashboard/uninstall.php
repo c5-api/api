@@ -1,7 +1,6 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 
-/*Loader::model('api_register', 'api');
-$pkgs = ApiRegister::getPackageList();
+$pkgs = ApiRouteList::getPackagesList();
 //print_r($pkgs);
 $canremove = true;
 if(count($pkgs) > 0) {
@@ -11,9 +10,8 @@ if(count($pkgs) > 0) {
 if(!$canremove) {
 	$names = array();
 	foreach($pkgs as $pkg) {
-		$p = Package::getByHandle($pkg);
-		if(is_object($p)) {
-			$names[] = '<li>'.$p->getPackageName().' - '.$p->getPackageDescription().'</li>';
+		if(is_object($pkg)) {
+			$names[] = '<li>'.$pkg->getPackageName().' - '.$pkg->getPackageDescription().'</li>';
 		}
 	}
 	
@@ -25,4 +23,4 @@ if(!$canremove) {
 	echo t('To procced with uninstallation, please type in "%s" below.', t('remove'));
 	echo '<br/><input type="text" name="force"/>';
 	
-}*/
+}
