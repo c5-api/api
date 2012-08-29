@@ -1,32 +1,49 @@
-<?php defnied('C5_EXECUTE') or die('Access Denied');
+<?php defined('C5_EXECUTE') or die('Access Denied');
 
 class ApiResponse {
 
-	static $format;
-	
-	public function __construct() {
-		self::getFormat();
-	}
+	public $format = array();
 
-	public static function setCode($code = false) {
-		if(!$code) {
-			$code = 200;
+	private $code = 200;
+
+	public static function get() {
+		static $instance;
+		if (!isset($instance)) {
+			$v = __CLASS__;
+			$instance = new $v;
+			$instance->getFormatObject();
 		}
-		header(':', true, $code);//in php 5.4 http_response_code() is added, but we use this for older versions.
+		return $instance;
 	}
 
-	public static function getFormat() {
+	public function setCode($code = false) {
+		$this->code = $code;
+	}
+
+	public function sendHeaders() {
+		header(':', true, $this->code);//in php 5.4 http_response_code() is added, but we use this for older versions.
+	}
+
+	public function getFormatObject() {
 		if(isset($_REQUEST['format'])) {
 			if(in_array($_REQUEST['format'], ApiFormatModel::getHandles())) {
 				$fo = ApiFormatModel::getByHandle($_REQUEST['format']);
 				ApiLoader::apiFormat($fo->handle, Package::getByID($fo->pkgID));
-				self::$format = $fo;
-				return self::$format;
+				$this->format = $fo;
+				return $this->format;
 			}
 		}
 		$fo = ApiFormatModel::getDefault();
-		self::$format = $fo;
-		return self::$format;
+		$this->format = $fo;
+		return $this->format;
+	}
+
+	public function encodeData($data) {
+		$format = $this->format;
+		$class = $format->getClass();
+		$class->setHeaders();
+		return $class->display($data);
+
 	}
 	
 }

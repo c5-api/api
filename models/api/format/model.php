@@ -76,6 +76,12 @@ class ApiFormatModel extends ADOdb_Active_Record {
 	public static function getDefault() {
 		$db = Loader::db();
 		$row = $db->getOne('SELECT fID FROM ApiFormats WHERE isDefault = 1');
-		return self::getByID($row['fID']);
+		return self::getByID($row);
+	}
+
+	public function getClass() {
+		$txt = Loader::helper('text');
+		$class = $txt->camelcase($this->handle).'ApiFormat';
+		return new $class;
 	}
 }

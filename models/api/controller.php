@@ -146,8 +146,17 @@ class ApiRouteController {
 		return null;
 	}
 
-	final public function respond($data) {
-		
+	final public function respond($data = array()) {
+		$resp = ApiResponse::get();
+		$resp->sendHeaders();
+		print $resp->encodeData($data);
+		exit;
+
+	}
+
+	final public function setCode($code) {
+		$resp = ApiResponse::get();
+		$resp->setCode($code);		
 	}
 
 }
