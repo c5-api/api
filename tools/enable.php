@@ -12,17 +12,17 @@ if(!$valt->validate('api_enable', $token)) {
 }
 $id = $_POST['ID'];
 $pkg = $_POST['pkg'];
-$re = $_POST['enabled'];
+$re = ($_POST['enabled']) ? 1 : 0;
 //print_r($_POST);
 if(is_string($pkg)) {
-	if(is_object(Package::getByHandle($pkg))) {
-		Loader::model('api_register', C5_API_HANDLE);
-	} else {
+	$pkg = Package::getByHandle($pkg);
+	if(!is_object($pkg)) {
 		die(t('Invalid Package'));
 	}
-	$list = ApiRegister::getApiListByPackage($pkg);
+	$list = ApiRouteList::getListByPackage($pkg);
 	foreach($list as $api) {
-		$api->setEnabled($re);
+		$api->enabled = $re;
+		$api->save();
 	}
 	echo '1';
 	exit;
@@ -31,12 +31,12 @@ if(is_string($pkg)) {
 if(!intval($id)) {
 	die(t('Invalid Route ID'));
 } else {
-	Loader::model('api_register', C5_API_HANDLE);
-	$api = ApiRegister::getByID($id);
-	if(!is_object($api)) {
+	$api = ApiRoute::getByID($id);
+	if(!is_object($api) || !$api->ID) {
 		die(t('Invalid Route ID'));
 	}
-	$api->setEnabled($re);
+	$api->enabled = $re;
+	$api->save();
 	echo '1';
 	exit;
 }

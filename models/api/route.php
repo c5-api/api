@@ -5,6 +5,7 @@ class ApiRoute extends ADOdb_Active_Record {
 	public $_table = 'ApiRouteRegistry';
 
 	public function __construct() {
+		$db = Loader::db();
 		parent::__construct('ApiRouteRegistry', array('ID'));
 	}
 

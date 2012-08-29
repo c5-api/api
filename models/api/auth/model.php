@@ -5,6 +5,7 @@ class ApiAuthModel extends ADOdb_Active_Record {
 	public $_table = 'ApiAuth';
 
 	public function __construct() {
+		$db = Loader::db();
 		parent::__construct('ApiAuth', array('aID'));
 	}
 

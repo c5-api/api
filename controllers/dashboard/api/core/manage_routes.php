@@ -32,22 +32,6 @@ class DashboardApiCoreManageRoutesController extends DashboardBaseController {
    				});
    				$("#api_list_ul").show();
 			});
-			$("#api_list").bind("select_node.jstree", function (e, data) {
-				var via = data.rslt.obj.children("a");
-				if(via.attr("data-pkg")) {
-					$("#api_list").jstree("toggle_node", via);
-					return;
-				}
-				obj = {
-					modal: true,
-					href: via.attr("href"),
-					width: via.attr("dialog-width"),
-					height: via.attr("dialog-height"),
-					title: via.attr("dialog-title"),
-					appendButtons: via.attr("dialog-append-buttons"),
-				}
-				jQuery.fn.dialog.open(obj);
-			})
 			$("#api_list").bind("check_node.jstree", function(e, data) {
 				var en = data.rslt.obj.children("a");
 				jQuery.fn.dialog.showLoader();
