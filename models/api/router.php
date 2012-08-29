@@ -21,6 +21,13 @@ class ApiRouter {
 		if(!$pk->config('ENABLED')) {
 			return; //if we arn't enabled, kill it. should we render an api response instead?
 		}
+
+		if(!defined('API_REQUEST_METHOD')) {
+			define('API_REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
+		} else {
+			$_SERVER['REQUEST_METHOD'] = API_REQUEST_METHOD;
+		}
+		
 		$req = Request::get();
 		$path = $req->getRequestPath();
 
@@ -79,7 +86,7 @@ class ApiRouter {
 					$cl = new $class;
 					$cl->setupAndRun();
 					break;
-				case 400:
+				default:
 					$route = ApiRouteList::getRouteByPath('bad_request');
 					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;
