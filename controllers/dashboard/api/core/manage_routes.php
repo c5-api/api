@@ -5,21 +5,8 @@ class DashboardApiCoreManageRoutesController extends DashboardBaseController {
 		$valt = Loader::helper('validation/token');
 		$html = Loader::helper('html');
 
-		$this->addFooterItem($html->javascript('http://static.jstree.com/v.1.0pre/jquery.jstree.js'));
-		/*$this->addFooterItem($html->javascript('jstree/jstree.core.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.contextmenu.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.dnd.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/_lib/jquery.hotkeys.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.hotkeys.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.html.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.json.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.sort.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.state.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.themes.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.ui.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.unique.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/jstree.xml.js', C5_API_HANDLE));
-		$this->addFooterItem($html->javascript('jstree/vakata.js', C5_API_HANDLE));*/
+		//$this->addFooterItem($html->javascript('http://static.jstree.com/v.1.0pre/jquery.jstree.js'));
+		$this->addFooterItem($html->javascript('jstree/jquery.jstree.js', C5_API_HANDLE));
 		$this->addFooterItem('<script type="text/javascript">
 			$(function () {
     			$("#api_list").jstree({
