@@ -16,8 +16,8 @@ class ApiRouteController {
 	final private function setupRequestTask() {
 
 		$req = ApiRouter::get();
-		
-		$task = substr('/' . $req->requestedPath, strlen($req->requestedRoute) + 1);
+
+		$task = substr($req->requestedRoute, strlen($req->foundRoute) + 1);
 
 		// grab the whole shebang
 		$taskparts = explode('/', $task);

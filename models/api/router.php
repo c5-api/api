@@ -6,6 +6,8 @@ class ApiRouter {
 
 	public $requestedRoute;
 
+	public $foundRoute;
+
 	public static function get() {
 		static $req;
 		if (!isset($req)) {
@@ -27,7 +29,7 @@ class ApiRouter {
 		} else {
 			$_SERVER['REQUEST_METHOD'] = API_REQUEST_METHOD;
 		}
-		
+
 		$req = Request::get();
 		$path = $req->getRequestPath();
 
@@ -42,6 +44,7 @@ class ApiRouter {
 			} else {
 				$path = DIR_REL.'/'.BASE_API_PATH;
 			}
+
 			//This is a path like /derp/thing/ha?params=1
 			$this->requestedPath =  trim(str_replace($path, '', $_SERVER['REQUEST_URI']), '/');
 
@@ -59,6 +62,7 @@ class ApiRouter {
 		$error = false;
 		$route = ApiRouteList::getRouteByPath($this->requestedRoute);
 		if(is_object($route) && $route->ID && !$route->internal) { //valid route
+			$this->foundRoute = $route->route;
 			$class = $txt->camelcase($route->route).'ApiRouteController';
 			try {
 				$env = Environment::get();
