@@ -60,8 +60,8 @@ class ApiRouter {
 				require_once($path);
 				if(class_exists($class)) {
 					$cl = new $class;
-					$cl->setupAndRun();
-					exit;
+					$data = $cl->setupAndRun();
+					$cl->respond($data);
 				}
 			} catch(Exception $e) {
 				$error = 500;
