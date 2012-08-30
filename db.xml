@@ -80,6 +80,9 @@
     <field name="handle" type="X2">
       <NOTNULL/>
     </field>
+     <field name="name" type="X2">
+      <NOTNULL/>
+    </field>
     <field name="enabled" type="I1" size="1">
       <NOTNULL/>
       <DEFAULT value="1"/>      

@@ -21,13 +21,14 @@ class ApiAuthModel extends ADOdb_Active_Record {
 		return $route;
 	}
 
-	public static function add($handle, $pkg, $enabled = true) {
+	public static function add($handle, $name, $pkg, $enabled = true) {
 		if(is_string($pkg)) {
 			$pkg = Package::getByHandle($pkg);
 		}
 		$rt = new ApiAuthModel();
 		$rt->pkgID = $pkg->getPackageID();
 		$rt->handle = $handle;
+		$rt->name = $name;
 		$rt->enabled = $enabled;
 		$rt->save();
 		return $rt;

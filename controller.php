@@ -67,6 +67,8 @@ class ApiPackage extends Package {
 		define('C5_API_DIRNAME_FORMATS', 'api/formats');
 		define('C5_API_DIRNAME_ROUTES', 'api/routes');
 
+		define('C5_API_DEFAULT_FORMAT', 'json');
+
 		define('C5_API_FILENAME_ROUTES_CONTROLLER', 'controller.php');
 		
 		define('C5_API_HANDLE', 'api');
@@ -98,8 +100,8 @@ class ApiPackage extends Package {
 		$p2->update(array('cName'=>t('Manage Routes'), 'cDescription'=>t('Managed installed API routes.')));
 		$p3 = SinglePage::add('/dashboard/api/core/on_off',$pkg);
 		$p3->update(array('cName'=>t('Enable & Disable the API')));
-		$p4 = SinglePage::add('/dashboard/api/core/refresh',$pkg);
-		$p4->update(array('cName'=>t('Refresh Routes')));
+		$p4 = SinglePage::add('/dashboard/api/core/formats',$pkg);
+		$p4->update(array('cName'=>t('Enable & Disable the API Formats')));
 		
 		$pkg->saveConfig('ENABLED', 1);
 
@@ -152,7 +154,7 @@ class ApiPackage extends Package {
 
 	public function installAuth() {
 		$pkg = Package::getByHandle(C5_API_HANDLE);
-		ApiAuthModel::add('key', $pkg);
+		ApiAuthModel::add('key', t('Key'), $pkg);
 	}
 
 	public static function registerAutoload() {
