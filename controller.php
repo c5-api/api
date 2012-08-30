@@ -108,6 +108,7 @@ class ApiPackage extends Package {
 		$this->installRoutes();
 		$this->installFormats();
 		$this->installAuth();
+		$this->installPermissions();
 		
 	}
 
@@ -138,6 +139,21 @@ class ApiPackage extends Package {
 		$db->Execute($sql2);
 		$db->Execute($sql3);
 		$pkg = parent::uninstall();
+	}
+
+	public function installPermissions() {
+		$pkg = Package::getByHandle(C5_API_HANDLE);
+
+		$user = PermissionAccessEntityType::getByHandle('user');
+		$group = PermissionAccessEntityType::getByHandle('group');
+		$group_combo = PermissionAccessEntityType::getByHandle('group_combination');
+		$group_set = PermissionAccessEntityType::getByHandle('group_set');
+
+		$pkx = PermissionKeyCategory::add('route', $pkg);
+		$pkx->associateAccessEntityType($user);
+		$pkx->associateAccessEntityType($group);
+		$pkx->associateAccessEntityType($group_combo);
+		$pkx->associateAccessEntityType($group_set);
 	}
 
 	public function installRoutes() {
