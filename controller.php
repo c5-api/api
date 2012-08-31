@@ -170,7 +170,9 @@ class ApiPackage extends Package {
 		$classes['ApiFormatModel'] = array('model', 'api/format/model', C5_API_HANDLE);
 		$classes['ApiFormatList'] = array('model', 'api/format/list', C5_API_HANDLE);
 		$classes['ApiAuthModel'] = array('model', 'api/auth/model', C5_API_HANDLE);
-		$classes['ApiAuthKey,ApiAuthKeyList'] = array('model', 'api/auth/key', C5_API_HANDLE);
+		$classes['ApiAuthKeyModel,ApiAuthKeyList'] = array('model', 'api/auth/key', C5_API_HANDLE);
+
+		$classes['ApiAuthKey'] = array('apiAuth', 'key', C5_API_HANDLE);
 
 		$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
 
@@ -212,6 +214,11 @@ class ApiLoader extends Loader {
 				self::$ApiClasses[$class] = $data;
 			}
 		}				
+	}
+
+	public static function apiAuth($path, $pkg) {
+		$env = Environment::get();
+		require_once($env->getPath(C5_API_DIRNAME_AUTH . '/' . $path . '.php', $pkg));
 	}
 
 	public static function apiFormat($path, $pkg) {

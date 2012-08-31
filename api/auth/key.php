@@ -1,16 +1,11 @@
 <?php defined('C5_EXECUTE') or die('Access Denied');
 
-class KeyApiAuth extends ApiAuthModel {
+class ApiAuthKey extends ApiAuthModel {
 
 	public function authorize() {
-		if($_REQUEST['key'] == '12345') {
-			return true;
-		}
-		return false;
-	}
-
-	public function getKeys() {
-
+		$public = $_REQUEST['key'];
+		$hash = $_REQUEST['hash'];
+		return ApiAuthKeyModel::validateRequest($public, $hash);
 	}
 	
 }

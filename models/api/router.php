@@ -63,6 +63,17 @@ class ApiRouter {
 		$route = ApiRouteList::getRouteByPath($this->requestedRoute);
 		if(is_object($route) && $route->ID && !$route->internal) { //valid route
 			$this->foundRoute = $route->route;
+			if($route->auth) {
+				//@TODO
+				//$auth = ApiAuthKey::authorize();
+				$auth = true;
+				if(!$auth) {
+					$route = ApiRouteList::getRouteByPath('forbidden');
+					$class = $txt->camelcase($route->route).'ApiRouteController';
+					$cl = new $class;
+					$cl->setupAndRun();
+				}
+			}
 			$class = $txt->camelcase($route->route).'ApiRouteController';
 			try {
 				$env = Environment::get();
