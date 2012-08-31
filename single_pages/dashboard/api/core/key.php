@@ -3,7 +3,6 @@
 	$ih = Loader::helper('concrete/interface');
 	$valt = Loader::helper('validation/token');?>
 		<div class="clearfix">
-			<h3><?php echo t('Api Keys')?></h3>
 			<?php echo '<a class="btn info" href="'.$this->action('generate').'/'.$valt->generate('generate').'">'.t('Generate New API Key').'</a>';?>
 			<table border="0" cellspacing="1" cellpadding="0" class="table table-striped">
 				<thead>
