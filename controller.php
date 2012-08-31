@@ -70,6 +70,7 @@ class ApiPackage extends Package {
 		define('C5_API_DEFAULT_FORMAT', 'json');
 
 		define('C5_API_DEFAULT_KEY_LENGTH', 40);
+		define('C5_API_KEY_TIMEOUT', 120);//in seconds
 
 		define('C5_API_FILENAME_ROUTES_CONTROLLER', 'controller.php');
 		

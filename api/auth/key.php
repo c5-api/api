@@ -5,7 +5,8 @@ class ApiAuthKey extends ApiAuthModel {
 	public function authorize() {
 		$public = $_REQUEST['key'];
 		$hash = $_REQUEST['hash'];
-		return ApiAuthKeyModel::validateRequest($public, $hash);
+		$time = $_REQUEST['time'];
+		return ApiAuthKeyModel::validateRequest($public, $time, $hash);
 	}
 	
 }

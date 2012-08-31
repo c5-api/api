@@ -2,7 +2,7 @@
 
 class ApiAuthKeyModel extends ADOdb_Active_Record {
 
-	static $whitelist = array('key', 'hash');
+	static $whitelist = array('key', 'hash', 'time');
 
 	public function __construct() {
 		$db = Loader::db();
@@ -38,10 +38,23 @@ class ApiAuthKeyModel extends ADOdb_Active_Record {
 		return sha1($str);
 	}
 
-	public function validateRequest($public, $hash) {
+	public static function validateTime($time) {
+		$now = time();
+		$past = $now - C5_API_KEY_TIMEOUT;
+		$future = $now + C5_API_KEY_TIMEOUT;
+		if($time >= $past && $time <= $future) {
+			return true;
+		}
+		return false;
+	}
+
+	public function validateRequest($public, $time, $hash) {
 		$public = self::getByPublicKey($public);
 		if(!$public->appID || !$public->active) {
 			return false;//invalid public key
+		}
+		if(!self::validateTime($time)) {
+			return false;
 		}
 		$route= ApiRouter::get()->requestedRoute;
 
@@ -56,7 +69,7 @@ class ApiAuthKeyModel extends ADOdb_Active_Record {
 			$query = '?'.$query;
 		}
 		$url = $route.$query;
-		$nhash = self::hash($url.':'.$public->privateKey);
+		$nhash = self::hash($url.':'.$time.':'.$public->privateKey);
 		if($hash == $nhash) {
 			return true;
 		}
