@@ -6,7 +6,7 @@ class DashboardApiCoreFormatsController extends DashboardBaseController {
 		if($updated) {
 			switch ($updated) {
 				case 'updated':
-					$this->set('message', t('Settings Updated.'));
+					$this->set('success', t('Settings Updated.'));
 					break;
 				case 'none_enabled':
 					$this->set('error', t('Atleast one format must be enabled.'));
@@ -16,7 +16,6 @@ class DashboardApiCoreFormatsController extends DashboardBaseController {
 					break;
 			}
 		}
-		echo $updated;
 		$list = ApiFormatList::getList(true);
 		$this->set('list', $list);
 	}

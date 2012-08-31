@@ -88,4 +88,21 @@
       <DEFAULT value="1"/>      
     </field>
   </table>
+  <table name="ApiAuthKey">
+    <field name="appID" type="I" size="10">
+      <KEY/>
+      <AUTOINCREMENT/>
+      <UNSIGNED/>
+    </field>
+    <field name="publicKey" type="C" size="255">
+      <NOTNULL/>
+    </field>
+    <field name="privateKey" type="C" size="255">
+      <NOTNULL/>
+    </field>
+     <field name="active" type="I1" size="1">
+      <NOTNULL/>
+      <DEFAULT value="1"/>      
+    </field>   
+  </table>
 </schema>

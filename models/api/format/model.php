@@ -6,7 +6,7 @@ class ApiFormatModel extends ADOdb_Active_Record {
 
 	public function __construct() {
 		$db = Loader::db();
-		parent::__construct('ApiFormats', array('fID'));
+		parent::__construct('ApiFormats');
 	}
 	
 	public function setHeaders() {

@@ -69,6 +69,8 @@ class ApiPackage extends Package {
 
 		define('C5_API_DEFAULT_FORMAT', 'json');
 
+		define('C5_API_DEFAULT_KEY_LENGTH', 40);
+
 		define('C5_API_FILENAME_ROUTES_CONTROLLER', 'controller.php');
 		
 		define('C5_API_HANDLE', 'api');
@@ -102,6 +104,8 @@ class ApiPackage extends Package {
 		$p3->update(array('cName'=>t('Enable & Disable the API')));
 		$p4 = SinglePage::add('/dashboard/api/core/formats',$pkg);
 		$p4->update(array('cName'=>t('Enable & Disable the API Formats')));
+		$p5 = SinglePage::add('/dashboard/api/core/key',$pkg);
+		$p5->update(array('cName'=>t('Api Keys')));
 		
 		$pkg->saveConfig('ENABLED', 1);
 
@@ -166,6 +170,7 @@ class ApiPackage extends Package {
 		$classes['ApiFormatModel'] = array('model', 'api/format/model', C5_API_HANDLE);
 		$classes['ApiFormatList'] = array('model', 'api/format/list', C5_API_HANDLE);
 		$classes['ApiAuthModel'] = array('model', 'api/auth/model', C5_API_HANDLE);
+		$classes['ApiAuthKey,ApiAuthKeyList'] = array('model', 'api/auth/key', C5_API_HANDLE);
 
 		$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
 
