@@ -21,7 +21,7 @@ class ApiAuthModel extends ADOdb_Active_Record {
 		return $route;
 	}
 
-	public static function add($handle, $name, $pkg, $enabled = true) {
+	public static function add($handle, $name, $pkg, $enabled = false) {
 		if(is_string($pkg)) {
 			$pkg = Package::getByHandle($pkg);
 		}
@@ -36,6 +36,12 @@ class ApiAuthModel extends ADOdb_Active_Record {
 	
 	public function authorize() {
 		return true;
+	}
+
+	public function setEnabled() {
+		$db = Loader::db();
+		$db->Execute('UPDATE ApiAuth SET enabled = 0');
+		$db->Execute('UPDATE ApiAuth SET enabled = 1 WHERE aID = ?', array($this->aID));
 	}
 
 }

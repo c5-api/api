@@ -68,6 +68,7 @@ class ApiPackage extends Package {
 		define('C5_API_DIRNAME_ROUTES', 'api/routes');
 
 		define('C5_API_DEFAULT_FORMAT', 'json');
+		define('C5_API_DEFAULT_AUTH', 'none');
 
 		define('C5_API_DEFAULT_KEY_LENGTH', 40);
 		define('C5_API_KEY_TIMEOUT', 120);//in seconds
@@ -105,8 +106,10 @@ class ApiPackage extends Package {
 		$p3->update(array('cName'=>t('Enable & Disable the API')));
 		$p4 = SinglePage::add('/dashboard/api/core/formats',$pkg);
 		$p4->update(array('cName'=>t('Enable & Disable the API Formats')));
-		$p5 = SinglePage::add('/dashboard/api/core/key',$pkg);
-		$p5->update(array('cName'=>t('Api Keys')));
+		$p5 = SinglePage::add('/dashboard/api/core/auth',$pkg);
+		$p5->update(array('cName'=>t('Manage Authentication Types')));
+		$p6 = SinglePage::add('/dashboard/api/core/key',$pkg);
+		$p6->update(array('cName'=>t('Api Keys')));
 		
 		$pkg->saveConfig('ENABLED', 1);
 
@@ -159,6 +162,7 @@ class ApiPackage extends Package {
 
 	public function installAuth() {
 		$pkg = Package::getByHandle(C5_API_HANDLE);
+		ApiAuthModel::add('none', t('None'), $pkg);
 		ApiAuthModel::add('key', t('Key'), $pkg);
 	}
 
@@ -171,8 +175,10 @@ class ApiPackage extends Package {
 		$classes['ApiFormatModel'] = array('model', 'api/format/model', C5_API_HANDLE);
 		$classes['ApiFormatList'] = array('model', 'api/format/list', C5_API_HANDLE);
 		$classes['ApiAuthModel'] = array('model', 'api/auth/model', C5_API_HANDLE);
+		$classes['ApiAuthList'] = array('model', 'api/auth/list', C5_API_HANDLE);
 		$classes['ApiAuthKeyModel,ApiAuthKeyList'] = array('model', 'api/auth/key', C5_API_HANDLE);
 
+		$classes['ApiAuthNone'] = array('apiAuth', 'none', C5_API_HANDLE);
 		$classes['ApiAuthKey'] = array('apiAuth', 'key', C5_API_HANDLE);
 
 		$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
