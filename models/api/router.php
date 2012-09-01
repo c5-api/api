@@ -65,8 +65,10 @@ class ApiRouter {
 			$this->foundRoute = $route->route;
 			if($route->auth) {
 				//@TODO
-				//$auth = ApiAuthKey::authorize();
-				$auth = true;
+				$authobj = ApiAuthList::getEnabled();
+				$class = $authobj->getClassName();
+				$auth = $class::authorize();
+
 				if(!$auth) {
 					$route = ApiRouteList::getRouteByPath('forbidden');
 					$class = $txt->camelcase($route->route).'ApiRouteController';

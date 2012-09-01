@@ -1,8 +1,8 @@
 <?php defined('C5_EXECUTE') or die('Access Denied');
 
-class ApiAuthKey extends ApiAuthModel {
+class KeyApiAuth extends ApiAuthModel {
 
-	public function authorize() {
+	public static function authorize() {
 		$public = $_REQUEST['key'];
 		$hash = $_REQUEST['hash'];
 		$time = $_REQUEST['time'];

@@ -16,4 +16,10 @@ class ApiAuthList {
 		return $d;
 	}
 
+	public static function getEnabled() {
+		$db = Loader::db();
+		$ID = $db->getOne('SELECT aID FROM ApiAuth WHERE enabled = 1');
+		return ApiAuthModel::getByID($ID);
+	}
+
 }

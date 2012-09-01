@@ -162,7 +162,7 @@ class ApiPackage extends Package {
 
 	public function installAuth() {
 		$pkg = Package::getByHandle(C5_API_HANDLE);
-		ApiAuthModel::add('none', t('None'), $pkg);
+		ApiAuthModel::add('none', t('None'), $pkg)->setEnabled();
 		ApiAuthModel::add('key', t('Key'), $pkg);
 	}
 
@@ -178,8 +178,8 @@ class ApiPackage extends Package {
 		$classes['ApiAuthList'] = array('model', 'api/auth/list', C5_API_HANDLE);
 		$classes['ApiAuthKeyModel,ApiAuthKeyList'] = array('model', 'api/auth/key', C5_API_HANDLE);
 
-		$classes['ApiAuthNone'] = array('apiAuth', 'none', C5_API_HANDLE);
-		$classes['ApiAuthKey'] = array('apiAuth', 'key', C5_API_HANDLE);
+		$classes['NoneApiAuth'] = array('apiAuth', 'none', C5_API_HANDLE);
+		$classes['KeyApiAuth'] = array('apiAuth', 'key', C5_API_HANDLE);
 
 		$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
 

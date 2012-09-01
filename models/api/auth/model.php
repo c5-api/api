@@ -34,7 +34,7 @@ class ApiAuthModel extends ADOdb_Active_Record {
 		return $rt;
 	}
 	
-	public function authorize() {
+	public static function authorize() {
 		return true;
 	}
 
@@ -42,6 +42,11 @@ class ApiAuthModel extends ADOdb_Active_Record {
 		$db = Loader::db();
 		$db->Execute('UPDATE ApiAuth SET enabled = 0');
 		$db->Execute('UPDATE ApiAuth SET enabled = 1 WHERE aID = ?', array($this->aID));
+	}
+
+	public function getClassName() {
+		$txt = Loader::helper('text');
+		return $txt->camelcase($this->handle).'ApiAuth';
 	}
 
 }
