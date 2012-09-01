@@ -86,6 +86,8 @@ class ApiRouter {
 					$cl = new $class;
 					$data = $cl->setupAndRun();
 					$cl->respond($data);
+				} else {
+					throw new Exception(t('Invalid Class Name: %s', $class));
 				}
 			} catch(Exception $e) {
 				$error = 500;

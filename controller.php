@@ -132,11 +132,10 @@ class ApiPackage extends Package {
 			$force = false;
 		}
 		if(!$force) {
-			/*Loader::model('api_register', 'api');
-			$pkgs = ApiRegister::getPackageList();
+			$pkgs = ApiRouteList::getPackagesList();
 			if(count($pkgs) > 0) {
 				throw new Exception(t('Please uninstall all addons that register routes with the API, before uninstalling this addon.'));
-			}*/
+			}
 		}
 		$db = Loader::db();
 		$sql1 = 'DROP TABLE IF EXISTS ApiRouteRegistry';
