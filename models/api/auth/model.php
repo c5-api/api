@@ -44,9 +44,13 @@ class ApiAuthModel extends ADOdb_Active_Record {
 		$db->Execute('UPDATE ApiAuth SET enabled = 1 WHERE aID = ?', array($this->aID));
 	}
 
-	public function getClassName() {
+	public function getClass() {
 		$txt = Loader::helper('text');
-		return $txt->camelcase($this->handle).'ApiAuth';
+		$class = $txt->camelcase($this->handle).'ApiAuth';
+		if(!class_exists($class)) {
+			ApiLoader::apiAuth($this->handle, Package::getByID($this->pkgID));
+		}
+		return $class;
 	}
 
 }

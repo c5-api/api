@@ -83,6 +83,9 @@ class ApiFormatModel extends ADOdb_Active_Record {
 	public function getClass() {
 		$txt = Loader::helper('text');
 		$class = $txt->camelcase($this->handle).'ApiFormat';
+		if(!class_exists($class)) {
+			ApiLoader::ApiFormat($this->handle, Package::getByID($this->pkgID));
+		}
 		return new $class;
 	}
 }

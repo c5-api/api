@@ -108,6 +108,9 @@ class ApiPackage extends Package {
 		$p4->update(array('cName'=>t('Enable & Disable the API Formats')));
 		$p5 = SinglePage::add('/dashboard/api/core/auth',$pkg);
 		$p5->update(array('cName'=>t('Manage Authentication Types')));
+
+		$p6 = SinglePage::add('/dashboard/api/auth',$pkg);
+		$p6->update(array('cName'=>t('Authentication')));
 		$p6 = SinglePage::add('/dashboard/api/core/key',$pkg);
 		$p6->update(array('cName'=>t('Api Keys')));
 		
@@ -177,10 +180,10 @@ class ApiPackage extends Package {
 		$classes['ApiAuthList'] = array('model', 'api/auth/list', C5_API_HANDLE);
 		$classes['ApiAuthKeyModel,ApiAuthKeyList'] = array('model', 'api/auth/key', C5_API_HANDLE);
 
-		$classes['NoneApiAuth'] = array('apiAuth', 'none', C5_API_HANDLE);
-		$classes['KeyApiAuth'] = array('apiAuth', 'key', C5_API_HANDLE);
+		//$classes['NoneApiAuth'] = array('apiAuth', 'none', C5_API_HANDLE);
+		//$classes['KeyApiAuth'] = array('apiAuth', 'key', C5_API_HANDLE);
 
-		$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
+		//$classes['JsonApiFormat'] = array('apiFormat', 'json', C5_API_HANDLE);
 
 		$classes['BadRequestApiRouteController'] = array('apiRoute', 'bad_request');
 		$classes['ForbiddenApiRouteController'] = array('apiRoute', 'forbidden');

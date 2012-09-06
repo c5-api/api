@@ -66,7 +66,7 @@ class ApiRouter {
 			if($route->auth) {
 				//@TODO
 				$authobj = ApiAuthList::getEnabled();
-				$class = $authobj->getClassName();
+				$class = $authobj->getClass();
 				$auth = $class::authorize();
 
 				if(!$auth) {

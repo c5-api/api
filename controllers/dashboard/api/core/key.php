@@ -6,7 +6,7 @@ class DashboardApiCoreKeyController extends DashboardBaseController {
 		if($updated) {
 			switch ($updated) {
 				case 'new':
-					$obj = ApiAuthKey::getByAppID($id);
+					$obj = ApiAuthKeyModel::getByAppID($id);
 					$succ = t('New Key Generated.')."\n";
 					$succ .= t('App ID: %s', $obj->appID)."\n";
 					$succ .= t('Public Key: %s', $obj->publicKey)."\n";
@@ -39,7 +39,7 @@ class DashboardApiCoreKeyController extends DashboardBaseController {
 		if(!$key || !$token) { //if this happens they someone is trying to hack it so no error message for them.
 			$this->redirect('/dashboard/api/core/key');
 		}
-		$obj = ApiAuthKey::getByAppID($key);
+		$obj = ApiAuthKeyModel::getByAppID($key);
 		if(!is_object($obj) || !$obj->appID) {
 			$this->redirect('/dashboard/api/core/key', 'invalid_key');
 		}
@@ -57,7 +57,7 @@ class DashboardApiCoreKeyController extends DashboardBaseController {
 		if(!$valt->validate('generate', $token)) {
 			$this->redirect('/dashboard/api/core/key', 'invalid_token');
 		}
-		$obj = ApiAuthKey::add();
+		$obj = ApiAuthKeyModel::add();
 		$id = $obj->appID;
 		$this->redirect('/dashboard/api/core/key', 'new', $id);
 	}
@@ -66,7 +66,7 @@ class DashboardApiCoreKeyController extends DashboardBaseController {
 		if(!$key || !$token) { //if this happens they someone is trying to hack it so no error message for them.
 			$this->redirect('/dashboard/api/core/key');
 		}
-		$obj = ApiAuthKey::getByAppID($key);
+		$obj = ApiAuthKeyModel::getByAppID($key);
 		if(!is_object($obj) || !$obj->appID) {
 			$this->redirect('/dashboard/api/core/key', 'invalid_key');
 		}
@@ -85,7 +85,7 @@ class DashboardApiCoreKeyController extends DashboardBaseController {
 		if(!$key || !$token) { //if this happens they someone is trying to hack it so no error message for them.
 			$this->redirect('/dashboard/api/core/key');
 		}
-		$obj = ApiAuthKey::getByAppID($key);
+		$obj = ApiAuthKeyModel::getByAppID($key);
 		if(!is_object($obj) || !$obj->appID) {
 			$this->redirect('/dashboard/api/core/key', 'invalid_key');
 		}
