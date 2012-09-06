@@ -111,7 +111,7 @@ class ApiPackage extends Package {
 
 		$p6 = SinglePage::add('/dashboard/api/auth',$pkg);
 		$p6->update(array('cName'=>t('Authentication')));
-		$p6 = SinglePage::add('/dashboard/api/core/key',$pkg);
+		$p6 = SinglePage::add('/dashboard/api/auth/key',$pkg);
 		$p6->update(array('cName'=>t('Api Keys')));
 		
 		$pkg->saveConfig('ENABLED', 1);
