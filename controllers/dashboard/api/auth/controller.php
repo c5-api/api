@@ -10,10 +10,12 @@ class DashboardApiAuthController extends DashboardBaseController {
 			$nc = Page::getByID($cID, 'ACTIVE');
 			$ncp = new Permissions($nc);
 			if ($ncp->canRead()) {
-				$categories[] = $nc;	
+				$this->redirect($nc->getCollectionPath());
 			}
 		}
-		$this->set('categories', $categories);
+		$parent = $c->getCollectionParentID();
+		$parent = Page::getByID($parent);
+		$this->redirect($parent->getCollectionPath());
 	}
 
 }
