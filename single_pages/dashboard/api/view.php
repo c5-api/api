@@ -39,7 +39,7 @@ echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('API 
 					} else { ?>
 					
 						<li>
-							<a href="<?php echo Loader::helper('navigation')->getLinkToCollection($cat, false, true)?>"><i class="<?php echo $cat->getAttribute('icon_dashboard')?>"></i> <?php echo t('Home')?></a>
+							<?php echo t('None');?>
 						</li>
 						
 					<?php } ?>
