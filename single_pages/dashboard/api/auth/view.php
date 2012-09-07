@@ -1,7 +1,6 @@
 <?php defined('C5_EXECUTE') or die('Access Denied');
 
-echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Authentication Settings'), t('Settings for each API Authentication Type are located here.'), false); ?>
-
+echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Authentication Settings'), t('Settings for each API Authentication Type are located here.'), false, false, false, false); ?>
 <div class="ccm-pane-body" style="padding-bottom: 0px">
 
 
@@ -54,6 +53,9 @@ echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Auth
 	
 </div>
 
+<div class="ccm-pane-footer">
+	<?php //echo t('The API is created by Michael Krasnow and Lucas Anderson. Please visit us at %s.', '<a href="http://c5api.com">http://c5api.com</a>');?>
+</div>
 
 <script type="text/javascript">
 $(function() {
