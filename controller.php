@@ -136,6 +136,13 @@ class ApiPackage extends Package {
 		
 		$pkg->saveConfig('ENABLED', 1);
 
+		$u = new User();
+		$qn = ConcreteDashboardMenu::getMine();
+		if(!$qn->contains($p)) {
+			$qn->add($p);
+			$u->saveConfig('QUICK_NAV_BOOKMARKS', serialize($qn));
+		}
+
 		$this->installRoutes();
 		$this->installFormats();
 		$this->installAuth();
