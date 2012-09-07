@@ -102,7 +102,7 @@ class ApiPackage extends Package {
 
 		$p1 = SinglePage::add('/dashboard/api/core/',$pkg);
 		$p1->update(array('cName'=>t('Core API')));
-		$p1->setAttribute('icon_dashboard', 'icon-list');
+		$p1->setAttribute('icon_dashboard', 'icon-folder-open');
 
 		$p2 = SinglePage::add('/dashboard/api/core/manage_routes',$pkg);
 		$p2->update(array('cName'=>t('Manage Routes'), 'cDescription'=>t('Managed installed API routes.')));
@@ -114,20 +114,25 @@ class ApiPackage extends Package {
 
 		$p4 = SinglePage::add('/dashboard/api/core/formats',$pkg);
 		$p4->update(array('cName'=>t('Enable & Disable the API Formats')));
+		$p4->setAttribute('icon_dashboard', 'icon-cog');
 
 		$p5 = SinglePage::add('/dashboard/api/core/auth',$pkg);
 		$p5->update(array('cName'=>t('Manage Authentication Types')));
+		$p5->setAttribute('icon_dashboard', 'icon-lock');
 
 
 		$p6 = SinglePage::add('/dashboard/api/auth',$pkg);
 		$p6->update(array('cName'=>t('Authentication')));
+		$p6->setAttribute('icon_dashboard', 'icon-folder-open');
 
 		$p7 = SinglePage::add('/dashboard/api/auth/key',$pkg);
 		$p7->update(array('cName'=>t('Api Keys')));
+		$p7->setAttribute('icon_dashboard', 'icon-th-list')
 
 
 		$p8 = SinglePage::add('/dashboard/api/formats',$pkg);
 		$p8->update(array('cName'=>t('Formats')));
+		$p8->setAttribute('icon_dashboard', 'icon-folder-open');
 		
 		$pkg->saveConfig('ENABLED', 1);
 
