@@ -127,7 +127,7 @@ class ApiPackage extends Package {
 
 		$p7 = SinglePage::add('/dashboard/api/auth/key',$pkg);
 		$p7->update(array('cName'=>t('Api Keys')));
-		$p7->setAttribute('icon_dashboard', 'icon-th-list')
+		$p7->setAttribute('icon_dashboard', 'icon-th-list');
 
 
 		$p8 = SinglePage::add('/dashboard/api/formats',$pkg);
