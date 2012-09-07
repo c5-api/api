@@ -137,6 +137,7 @@ class ApiPackage extends Package {
 		$pkg->saveConfig('ENABLED', 1);
 
 		$u = new User();
+		Loader::helper('concrete/dashboard');
 		$qn = ConcreteDashboardMenu::getMine();
 		if(!$qn->contains($p)) {
 			$qn->add($p);
