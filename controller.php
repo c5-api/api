@@ -98,21 +98,33 @@ class ApiPackage extends Package {
 		
 		$p = SinglePage::add('/dashboard/api',$pkg);
 		$p->update(array('cName'=>t('concrete5 API'), 'cDescription'=>t('Remote management of your site.')));
+		$p->setAttribute('icon_dashboard', 'icon-home');
+
 		$p1 = SinglePage::add('/dashboard/api/core/',$pkg);
 		$p1->update(array('cName'=>t('Core API')));
+		$p1->setAttribute('icon_dashboard', 'icon-list');
+
 		$p2 = SinglePage::add('/dashboard/api/core/manage_routes',$pkg);
 		$p2->update(array('cName'=>t('Manage Routes'), 'cDescription'=>t('Managed installed API routes.')));
+		$p2->setAttribute('icon_dashboard', 'icon-list-alt');
+
 		$p3 = SinglePage::add('/dashboard/api/core/on_off',$pkg);
 		$p3->update(array('cName'=>t('Enable & Disable the API')));
+		$p3->setAttribute('icon_dashboard', 'icon-off');
+
 		$p4 = SinglePage::add('/dashboard/api/core/formats',$pkg);
 		$p4->update(array('cName'=>t('Enable & Disable the API Formats')));
+
 		$p5 = SinglePage::add('/dashboard/api/core/auth',$pkg);
 		$p5->update(array('cName'=>t('Manage Authentication Types')));
 
+
 		$p6 = SinglePage::add('/dashboard/api/auth',$pkg);
 		$p6->update(array('cName'=>t('Authentication')));
+
 		$p7 = SinglePage::add('/dashboard/api/auth/key',$pkg);
 		$p7->update(array('cName'=>t('Api Keys')));
+
 
 		$p8 = SinglePage::add('/dashboard/api/formats',$pkg);
 		$p8->update(array('cName'=>t('Formats')));
