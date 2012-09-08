@@ -55,7 +55,7 @@ echo Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('API 
 </div>
 
 <div class="ccm-pane-footer">
-	<?php echo t('The API is created by Michael Krasnow and Lucas Anderson. Please visit us at %s.', '<a href="http://c5api.com">http://c5api.com</a>');?>
+	<?php echo t('The API is created by Michael Krasnow and Lucas Anderson. Please visit us at %s.', '<a target="_blank" href="http://c5api.com">http://c5api.com</a>');?>
 </div>
 
 <script type="text/javascript">
