@@ -190,7 +190,7 @@ class ApiPackage extends Package {
 
 	public function installFormats() {
 		$pkg = Package::getByHandle(C5_API_HANDLE);
-		ApiFormatModel::add('json', $pkg, true, true)->setDefault();
+		ApiFormatModel::add('json', $pkg, true)->setDefault();
 	}
 
 	public function installAuth() {
