@@ -22,4 +22,31 @@ class ApiAuthList {
 		return ApiAuthModel::getByID($ID);
 	}
 
+	public static function getListByPackage($pkg) {
+		if(is_string($pkg)) {
+			$pkg = Package::getByHandle($pkg);
+		} else if (is_int($pkg)) {
+			$pkg = Package::getByID($pkg);
+		}
+		if(is_object($pkg)) {
+			$pkg = $pkg->getPackageID();
+		} else {
+			return array();
+		}
+		$list = array();
+		$db = Loader::db();
+		$r = $db->Execute('SELECT aID FROM ApiAuth where pkgID = ?', array($pkg));
+		while ($row = $r->FetchRow()) {
+			$list[] = ApiAuthModel::getByID($row['aID']);
+		}
+		return $list;
+	}
+
+	public static function removeByPackage($pkg) {
+		$list = self::getListByPackage($pkg);
+		foreach($list as $route) {
+			$route->delete();
+		}
+	}
+
 }
