@@ -27,7 +27,7 @@
 							foreach($pkgRts as $pkgRt) { ?>
 
 							<li id="r<?php echo $pkgRt->ID; ?>" class="jstree<?php if ($pkgRt->enabled == '1') { echo "-checked"; } ?>">
-								<a data-ID="<?php echo $pkgRt->ID; ?>" href="javascript:void(0);"><?php echo $pkgRt->name; ?></a>
+								<a data-ID="<?php echo $pkgRt->ID; ?>" href="javascript:void(0);"><?php echo $pkgRt->name; ?> : <em>/<?php echo $pkgRt->route;?></em></a>
 							</li>
 
 							<?php } ?>
