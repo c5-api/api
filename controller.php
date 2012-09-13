@@ -184,6 +184,7 @@ class ApiPackage extends Package {
 	public function installRoutes() {
 		$pkg = Package::getByHandle(C5_API_HANDLE);
 		ApiRoute::add('bad_request', t('Bad Request'), $pkg, true, false, true);
+		ApiRoute::add('unauthorized', t('Unauthorized'), $pkg, true, false, true);
 		ApiRoute::add('forbidden', t('Forbidden'), $pkg, true, false, true);
 		ApiRoute::add('server_error', t('Server Error'), $pkg, true, false, true);
 	}

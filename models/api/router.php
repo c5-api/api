@@ -70,7 +70,7 @@ class ApiRouter {
 				$auth = $class::authorize();
 
 				if(!$auth) {
-					$route = ApiRouteList::getRouteByPath('forbidden');
+					$route = ApiRouteList::getRouteByPath('unauthorized');
 					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;
 					$cl->setupAndRun();
