@@ -6,7 +6,7 @@ concrete5 API allows you to create "routes" which can then be consumed by your o
 Installation
 ------------
 
-To install this addon `cd` into your site's `concrete` directory and run the following command from your console:
+To install this addon `cd` into your site's `packages` directory and run the following command from your console:
 
 	git clone https://github.com/c5-api/api.git
 
