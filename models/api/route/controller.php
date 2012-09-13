@@ -14,6 +14,7 @@
 class ApiRouteController {
 
 	final private function setupRequestTask() {
+		$txt = Loader::helper('text');
 
 		$req = ApiRouter::get();
 
