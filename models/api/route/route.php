@@ -9,12 +9,27 @@ class ApiRoute extends ADOdb_Active_Record {
 		parent::__construct('ApiRouteRegistry');
 	}
 
+	/**
+	 * Get an ApiRoute by ID
+	 * @param int $ID
+	 * @return ApiRoute
+	 */
 	public static function getByID($ID) {
 		$route = new ApiRoute();
 		$route->Load('ID = ?', array($ID));
 		return $route;
 	}
 
+	/**
+	 * Add a new Route
+	 * @param string $route The path of the route to be added e.g. pages/list
+	 * @param string $name Name of the route
+	 * @param mixed $pkg Package handle or object
+	 * @param bool $enabled is the route enabled when added?
+	 * @param bool $auth Does the route require authentication?
+	 * @param bool $internal is the route internal?
+	 * @return bool|ApiRoute
+	 */
 	public static function add($route, $name, $pkg, $enabled = true, $auth = true, $internal = false) {
 		$route = trim($route, '/');
 		if(is_string($pkg)) {
@@ -39,18 +54,33 @@ class ApiRoute extends ADOdb_Active_Record {
 		return $rt;
 	}
 
+	/**
+	 * Delete a route
+	 */
 	public function delete() {
 		parent::delete();
 	}
 
+	/**
+	 * Check if a route exists
+	 * @param string $route
+	 * @return bool
+	 */
 	private static function routeExists($route) {
 		$rt = new ApiRoute();
 		$rt->load('route = ?', array($route));
 		if($rt->ID) {
 			return true;
 		}
+		return false;
 	}
 
+	/**
+	 * Gets the path to a route in the filesystem
+	 * @param string $route
+	 * @param Package $pkg
+	 * @return string|bool
+	 */
 	private static function getApiPath($route, $pkg) {
 		$pkgHandle = $pkg->getPackageHandle();
 		$env = Environment::get();
@@ -70,6 +100,10 @@ class ApiRoute extends ADOdb_Active_Record {
 
 class ApiRouteList {
 
+	/**
+	 * Get a list of all routes that are not internal as an array of ApiRoute objects
+	 * @return array $list
+	 */
 	public static function getList() {
 		$list = array();
 		$db = Loader::db();
@@ -80,6 +114,11 @@ class ApiRouteList {
 		return $list;
 	}
 
+	/**
+	 * Get an array of ApiRoutes by package
+	 * @param mixed $pkg
+	 * @return array $list
+	 */
 	public static function getListByPackage($pkg) {
 		if(is_string($pkg)) {
 			$pkg = Package::getByHandle($pkg);
@@ -100,6 +139,11 @@ class ApiRouteList {
 		return $list;
 	}
 
+	/**
+	 * Remove routes by package
+	 * @param mixed $pkg
+	 * @return void
+	 */
 	public static function removeByPackage($pkg) {
 		$list = self::getListByPackage($pkg);
 		foreach($list as $route) {
@@ -107,6 +151,11 @@ class ApiRouteList {
 		}
 	}
 
+	/**
+	 * Get a route by path, if there is no route at /config/lol/haha, then it tries /config/lol, then /config
+	 * @param string $path
+	 * @return bool|ApiRoute
+	 */
 	public static function getRouteByPath($path) {
 		$db = Loader::db();
 		$ID = false;
@@ -125,6 +174,10 @@ class ApiRouteList {
 		return false;//not found
 	}
 
+	/**
+	 * Get a list of all packages that have routes
+	 * @return array $ar
+	 */
 	public static function getPackagesList() {
 		$db = Loader::db();
 		$pk = Package::getByHandle(C5_API_HANDLE);
