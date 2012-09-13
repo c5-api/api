@@ -4,7 +4,7 @@ class BadRequestApiRouteController extends ApiRouteController {
 	
 	public function run() {
 		$this->setCode(400);
-		$this->respond('Bad Request');
+		$this->respond(array('error' => 'Bad Request'));
 	}
 
 }

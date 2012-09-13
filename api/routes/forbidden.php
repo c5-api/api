@@ -4,7 +4,7 @@ class ForbiddenApiRouteController extends ApiRouteController {
 	
 	public function run() {
 		$this->setCode(403);
-		$this->respond('Forbidden');
+		$this->respond(array('error' => 'Forbidden'));
 	}
 
 }

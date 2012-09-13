@@ -4,7 +4,7 @@ class UnauthorizedApiRouteController extends ApiRouteController {
 	
 	public function run() {
 		$this->setCode(401);
-		$this->respond('Unauthorized');
+		$this->respond(array('error' => 'Unauthorized'));
 	}
 
 }
