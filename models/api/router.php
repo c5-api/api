@@ -64,7 +64,6 @@ class ApiRouter {
 		if(is_object($route) && $route->ID && !$route->internal) { //valid route
 			$this->foundRoute = $route->route;
 			if($route->auth) {
-				//@TODO
 				$authobj = ApiAuthList::getEnabled();
 				$class = $authobj->getClass();
 				$auth = $class::authorize();
