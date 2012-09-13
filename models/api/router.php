@@ -2,12 +2,31 @@
 
 class ApiRouter {
 
+	/**
+	 * Contains the requested path
+	 * e.g. /config/derp?some=param&other=stuff
+	 * @var string
+	 */
 	public $requestedPath;
 
+	/**
+	 * Contains the requested route
+	 * e.g config/derp
+	 * @var string
+	 */
 	public $requestedRoute;
 
+	/**
+	 * Contains the found route
+	 * e.g config
+	 * @var string
+	 */
 	public $foundRoute;
 
+	/**
+	 * Get an ApiRouter object, if none exists, create one and then parse the current request.
+	 * @return ApiRouter
+	 */
 	public static function get() {
 		static $req;
 		if (!isset($req)) {
@@ -17,6 +36,10 @@ class ApiRouter {
 		return $req;
 	}
 
+	/**
+	 * Parse the current request and set all our vars
+	 * @return void;
+	 */
 	public function parseRequest() {
 
 		$pk = Package::getByHandle(C5_API_HANDLE);
@@ -57,6 +80,10 @@ class ApiRouter {
 		}
 	}
 
+	/**
+	 * Get the route, if it requires auth, then run it, then run the route
+	 * @return void
+	 */
 	public function dispatch() {
 		$txt = Loader::helper('text');
 		$error = false;
