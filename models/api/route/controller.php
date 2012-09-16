@@ -160,4 +160,13 @@ class ApiRouteController {
 		$resp->setCode($code);		
 	}
 
+	public function filterObject($obj, array $filter = array()) {
+		foreach($obj as $key => $value) {
+			if(!in_array($key, $filter)) {
+				unset($obj->$key);
+			}
+		}
+		return $obj;
+	}
+
 }
