@@ -169,4 +169,12 @@ class ApiRouteController {
 		return $obj;
 	}
 
+	public function object_merge() {
+		$args = func_get_args();
+		foreach($args as $key => $value) {
+			$args[$key] = (array) $value;
+		}
+		return (object) call_user_func_array(array_merge, $args);
+	}
+
 }
