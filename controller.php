@@ -133,6 +133,10 @@ class ApiPackage extends Package {
 		$p8 = SinglePage::add('/dashboard/api/formats',$pkg);
 		$p8->update(array('cName'=>t('Formats')));
 		$p8->setAttribute('icon_dashboard', 'icon-folder-open');
+
+		$p9 = SinglePage::add('/dashboard/api/settings',$pkg);
+		$p9->update(array('cName'=>t('Route Settings')));
+		$p9->setAttribute('icon_dashboard', 'icon-folder-open');
 		
 		$pkg->saveConfig('ENABLED', 1);
 
