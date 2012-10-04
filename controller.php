@@ -27,7 +27,7 @@ class ApiPackage extends Package {
 	/**
 	 * @var string Version of the package
 	 */
-	protected $pkgVersion = '0.9';
+	protected $pkgVersion = '0.91';
 
     /**
      * Returns the package name
