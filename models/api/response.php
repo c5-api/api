@@ -35,7 +35,7 @@ class ApiResponse {
 	 */
 	public function setCode($code = false) {
 		$ret = Events::fire('on_api_response_set_code', $code);//I want references!
-		if(!is_null($ret)) {
+		if($ret !== false) {
 			$code = $ret;
 		}
 		$this->code = $code;
@@ -81,7 +81,7 @@ class ApiResponse {
 		$class->setHeaders();
 		$data = $class->display($data);
 		$ret = Events::fire('on_api_response_encode_data', $data);//I NEED REFERENCES
-		if(!is_null($ret)) {
+		if($ret !== false) {
 			$data = $ret;
 		}
 		return $data;
