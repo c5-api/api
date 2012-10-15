@@ -34,6 +34,10 @@ class ApiResponse {
 	 * @return void
 	 */
 	public function setCode($code = false) {
+		$ret = Events::fire('on_api_response_set_code', $code);//I want references!
+		if(!is_null($ret)) {
+			$code = $ret;
+		}
 		$this->code = $code;
 	}
 
@@ -42,6 +46,7 @@ class ApiResponse {
 	 * @param void
 	 */
 	public function sendHeaders() {
+		Events::fire('on_api_response_send_headers', $this);
 		header(':', true, $this->code);//in php 5.4 http_response_code() is added, but we use this for older versions.
 	}
 
@@ -50,15 +55,17 @@ class ApiResponse {
 	 * @return ApiFormatModel
 	 */
 	public function getFormatObject() {
+		$fo = ApiFormatModel::getDefault();
 		if(isset($_REQUEST['format'])) {
 			if(in_array($_REQUEST['format'], ApiFormatModel::getHandles())) {
 				$fo = ApiFormatModel::getByHandle($_REQUEST['format']);
 				ApiLoader::apiFormat($fo->handle, Package::getByID($fo->pkgID));
-				$this->format = $fo;
-				return $this->format;
 			}
 		}
-		$fo = ApiFormatModel::getDefault();
+		$ret = Events::fire('on_api_response_get_format_object', $fo);
+		if(is_object($ret)) {
+			$fo = $ret;
+		}
 		$this->format = $fo;
 		return $this->format;
 	}
@@ -72,7 +79,12 @@ class ApiResponse {
 		$format = $this->format;
 		$class = $format->getClass();
 		$class->setHeaders();
-		return $class->display($data);
+		$data = $class->display($data);
+		$ret = Events::fire('on_api_response_encode_data', $data);//I NEED REFERENCES
+		if(!is_null($ret)) {
+			$data = $ret;
+		}
+		return $data;
 
 	}
 	

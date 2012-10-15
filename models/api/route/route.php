@@ -50,7 +50,12 @@ class ApiRoute extends ADOdb_Active_Record {
 		$rt->auth = $auth;
 		$rt->enabled = $enabled;
 		$rt->internal = $internal;
+		$ret = Events::fire('on_before_api_route_add', $rt);
+		if($ret == '-1') {
+			return false;
+		}
 		$rt->save();
+		Events::fire('on_api_route_add', $rt);
 		return $rt;
 	}
 
@@ -58,6 +63,10 @@ class ApiRoute extends ADOdb_Active_Record {
 	 * Delete a route
 	 */
 	public function delete() {
+		$ret = Events::fire('on_before_api_route_delete', $this);
+		if($ret == '-1') {
+			return false;
+		}
 		parent::delete();
 	}
 

@@ -93,14 +93,17 @@ class ApiRouter {
 			if($route->auth) {
 				$authobj = ApiAuthList::getEnabled();
 				$class = $authobj->getClass();
+				Events::fire('on_api_auth', $this, $class);
 				$auth = $class::authorize();
 
 				if(!$auth) {
+					Events::fire('on_api_auth_fail', $this);
 					$route = ApiRouteList::getRouteByPath('unauthorized');
 					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;
 					$cl->setupAndRun();
 				}
+				Events::fire('on_api_auth_pass', $this);
 			}
 			$class = $txt->camelcase($route->route).'ApiRouteController';
 			try {
@@ -110,6 +113,7 @@ class ApiRouter {
 				require_once($path);
 				if(class_exists($class)) {
 					$cl = new $class;
+					Events::fire('on_api_run', $this, $cl);
 					$data = $cl->setupAndRun();
 					$cl->respond($data);
 				} else {
@@ -126,12 +130,15 @@ class ApiRouter {
 		if($error) {
 			switch($error) {
 				case 500:
+					Events::fire('on_api_server_error', $this);
 					$route = ApiRouteList::getRouteByPath('server_error');
 					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;
 					$cl->setupAndRun();
 					break;
+				case 400:
 				default:
+					Events::fire('on_api_bad_request', $this);
 					$route = ApiRouteList::getRouteByPath('bad_request');
 					$class = $txt->camelcase($route->route).'ApiRouteController';
 					$cl = new $class;
