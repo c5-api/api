@@ -48,7 +48,7 @@ class ApiAuthKeyModel extends ADOdb_Active_Record {
 		return false;
 	}
 
-	public function validateRequest($public, $time, $hash) {
+	public static function validateRequest($public, $time, $hash) {
 		$public = self::getByPublicKey($public);
 		if(!$public->appID || !$public->active) {
 			return false;//invalid public key
