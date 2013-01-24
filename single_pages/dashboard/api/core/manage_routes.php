@@ -27,7 +27,14 @@
 							foreach($pkgRts as $pkgRt) { ?>
 
 							<li id="r<?php echo $pkgRt->ID; ?>" class="jstree<?php if ($pkgRt->enabled == '1') { echo "-checked"; } ?>">
-								<a data-ID="<?php echo $pkgRt->ID; ?>" href="javascript:void(0);"><?php echo $pkgRt->name; ?> : <em><?php echo BASE_URL.DIR_REL.'/'.BASE_API_PATH.'/'.$pkgRt->route;?></em></a>
+								<?php 
+								if(URL_REWRITING) {
+									$url = BASE_URL.DIR_REL;
+								} else {
+									$url = BASE_URL.DIR_REL.'/'.DISPATCHER_FILENAME;
+								}
+								?>
+								<a data-ID="<?php echo $pkgRt->ID; ?>" href="javascript:void(0);"><?php echo $pkgRt->name; ?> : <em><?php echo $url.'/'.BASE_API_PATH.'/'.$pkgRt->route;?></em></a>
 							</li>
 
 							<?php } ?>
