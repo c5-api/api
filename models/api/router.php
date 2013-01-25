@@ -85,6 +85,19 @@ class ApiRouter {
 	 * @return void
 	 */
 	public function dispatch() {
+		$env = Environment::get();
+		$zfpath = $env->getPath('libraries/3rdparty/Zend/Loader/AutoloaderFactory.php', 'api');
+		include($zfpath);
+        Zend\Loader\AutoloaderFactory::factory(array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'autoregister_zf' => true
+            )
+        ));
+
+        if (!class_exists('Zend\Loader\AutoloaderFactory')) {
+  			throw new RuntimeException('Unable to load ZF2.');
+		}
+
 		$txt = Loader::helper('text');
 		$error = false;
 		$route = ApiRouteList::getRouteByPath($this->requestedRoute);
